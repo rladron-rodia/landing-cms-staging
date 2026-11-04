@@ -289,12 +289,16 @@
       }
       h1, h2, h3, h4, .font-display, .kpi-number { font-family:'Rubik', sans-serif; }
 
+      /* v7.3 — grid más visible pero sutil, tinte blanco cálido + tenue acento rojo */
       .grid-bg {
+        background-image:
+          linear-gradient(to right, rgba(255,255,255,0.055) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(255,255,255,0.055) 1px, transparent 1px);
         background-size:40px 40px;
         background-position:center center;
         opacity:1;
-        mask-image:radial-gradient(circle at center, black 55%, transparent 100%);
-        -webkit-mask-image:radial-gradient(circle at center, black 55%, transparent 100%);
+        mask-image:radial-gradient(ellipse at center, black 40%, transparent 90%);
+        -webkit-mask-image:radial-gradient(ellipse at center, black 40%, transparent 90%);
       }
       .glass-card {
         background:rgba(15,31,48,0.7);
