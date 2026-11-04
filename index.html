@@ -1,4 +1,6 @@
 <html lang="es"><head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -63,9 +65,6 @@
          de tailwind.min.css (Lighthouse: critical chain ~354ms).
          Con preload arrancan en paralelo al HTML parse y no quedan en
          serie con Tailwind. -->
-    <link rel="preload" as="font" type="font/woff2" href="assets/fonts/inter-400.woff2" crossorigin>
-    <link rel="preload" as="font" type="font/woff2" href="assets/fonts/inter-600.woff2" crossorigin>
-    <link rel="preload" as="font" type="font/woff2" href="assets/fonts/inter-700.woff2" crossorigin>
 
     <!-- ═══ Theme & mobile hints ═══ -->
     <meta name="theme-color" content="#0B0E14">
@@ -247,33 +246,18 @@
     <!-- FontAwesome subset (16 KB) — async OK porque los iconos no son
          layout-critical (parpadean brevemente en cuadritos hasta que carga,
          pero no reposicionan otros elementos). -->
-    <link rel="preload" href="assets/css/fa-subset.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="assets/css/fa-subset.min.css"></noscript>
     <!-- Preload solo de fa-regular-400 (24 KB, usado en iconos above-the-fold).
          fa-solid-900 (156 KB) NO se preloadea porque no está en el LCP path
          y bloquea la red para los Inter fonts críticos (v3.1.1 patch). -->
-    <link rel="preload" as="font" type="font/woff2" href="assets/fonts/fa-regular-400.woff2" crossorigin>
 
     <!-- ═══ Inter font self-hosted (v2.4.2 — eliminamos fonts.googleapis.com 750ms) ═══ -->
     <!-- @font-face local con font-display:swap y unicode-range latin para reducir peso.
          Si los woff2 aún no están en assets/fonts/, ver instrucciones en
          README.md sección "Self-host Inter font". -->
     <style>
-      @font-face{
-        font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;
-        src:url('assets/fonts/inter-400.woff2') format('woff2');
-        unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
-      }
-      @font-face{
-        font-family:'Inter';font-style:normal;font-weight:600;font-display:swap;
-        src:url('assets/fonts/inter-600.woff2') format('woff2');
-        unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
-      }
-      @font-face{
-        font-family:'Inter';font-style:normal;font-weight:700;font-display:swap;
-        src:url('assets/fonts/inter-700.woff2') format('woff2');
-        unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
-      }
+      
+      
+      
     </style>
     <!-- v2.1.5: la config de Tailwind ya está compilada estáticamente en assets/css/tailwind.min.css.
          Este bloque solo aplica si alguien re-introduce el CDN de Tailwind (dev) — guard contra ReferenceError. -->

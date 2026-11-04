@@ -32,12 +32,13 @@
 
   // ─── Utils ────────────────────────────────────────────────────────────
   function fmt(n) {
-    if (n === null || n === undefined) return null;
+    if (n === null || n === undefined || n === '') return null;
     if (typeof n === 'string') n = parseFloat(n);
     if (!isFinite(n)) return null;
     if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/,'') + 'M+';
     if (n >= 1e3) return (n / 1e3).toFixed(0) + 'K+';
-    return String(n);
+    // número bajo: devuelve con separadores de miles (en-US → comas)
+    return Math.round(n).toLocaleString('en-US');
   }
   function fmtHours(h) {
     if (h === null || h === undefined) return null;
@@ -65,8 +66,11 @@
         var key = el.getAttribute('data-live-metric');
         var val = m[key];
         if (val === null || val === undefined) return;
-        // if numeric, format; otherwise use raw (admin value_text like "330K+")
-        var formatted = (typeof val === 'number') ? fmt(val) : val;
+        // siempre pasa por fmt(): si viene number OR string numérico (ej "371356")
+        // → se formatea como "371K+". Si viene string no numérico (ej "250+" del
+        // admin value_text) se preserva tal cual.
+        var asNumber = (typeof val === 'number') ? val : parseFloat(val);
+        var formatted = isFinite(asNumber) ? fmt(asNumber) : String(val);
         text(el, formatted);
       });
     }).catch(function () { /* silent — fallback already in markup */ });
