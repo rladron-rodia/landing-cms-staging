@@ -34,55 +34,32 @@
   // Fallback por categoría cuando game_assets.thumbnail_url viene null. Mezcla
   // de monou-* (propios) + publishers/* (minecraft, roblox, etc.) para variedad.
   var S3 = 'https://monou-landing-images-prod.s3.us-east-1.amazonaws.com';
+  // 4 imágenes únicas por categoría — distribución curada:
+  // - Carreras: 2 monou + 2 pub acción/arcade
+  // - Puzzles: 3 monou + minecraft
+  // - Acción: 2 monou + 2 pub combat
+  // - Plataforma: monou-bird/pacman + 2 pub plataforma-style
+  // - Estrategia: 2 pub estratégicos + 2 monou
+  // - Aventura: monou-attack/bird + 2 pub open world
+  // - Simulación: monou-pacman/bird + minecraft/roblox
+  // - Deportes: 2 pub (brawl/clash) + 2 monou
+  var ATTACK  = { url: S3 + '/games/monou-attack-b91891f9.png',    alt: 'Monou Attack' };
+  var PACMAN  = { url: S3 + '/games/monou-pacman-c85cd485.png',    alt: 'Monou Pacman' };
+  var BIRD    = { url: S3 + '/games/monou-bird-402f96d8.png',       alt: 'Monou Bird' };
+  var MINEC   = { url: S3 + '/publishers/minecraft-b9683d42.png',   alt: 'Minecraft' };
+  var ROBLOX  = { url: S3 + '/publishers/roblox-72205627.png',      alt: 'Roblox' };
+  var CLASHR  = { url: S3 + '/publishers/clashroyale-da945d9a.png', alt: 'Clash Royale' };
+  var BRAWL   = { url: S3 + '/publishers/brawlstar-870674e2.png',   alt: 'Brawl Stars' };
+
   var WALL_FALLBACK = {
-    carreras:   [
-      { url: S3 + '/games/monou-attack-b91891f9.png',     alt: 'Monou Attack' },
-      { url: S3 + '/games/monou-pacman-c85cd485.png',     alt: 'Monou Pacman' },
-      { url: S3 + '/publishers/brawlstar-870674e2.png',    alt: 'Brawl Stars' },
-      { url: S3 + '/publishers/clashroyale-da945d9a.png',  alt: 'Clash Royale' },
-    ],
-    puzzles:    [
-      { url: S3 + '/games/monou-bird-402f96d8.png',        alt: 'Monou Bird' },
-      { url: S3 + '/games/monou-pacman-c85cd485.png',      alt: 'Monou Pacman' },
-      { url: S3 + '/publishers/minecraft-b9683d42.png',    alt: 'Minecraft' },
-      { url: S3 + '/publishers/roblox-72205627.png',       alt: 'Roblox' },
-    ],
-    accion:     [
-      { url: S3 + '/games/monou-attack-b91891f9.png',     alt: 'Monou Attack' },
-      { url: S3 + '/publishers/brawlstar-870674e2.png',    alt: 'Brawl Stars' },
-      { url: S3 + '/publishers/clashroyale-da945d9a.png',  alt: 'Clash Royale' },
-      { url: S3 + '/games/monou-pacman-c85cd485.png',      alt: 'Monou Pacman' },
-    ],
-    plataforma: [
-      { url: S3 + '/games/monou-bird-402f96d8.png',        alt: 'Monou Bird' },
-      { url: S3 + '/games/monou-pacman-c85cd485.png',      alt: 'Monou Pacman' },
-      { url: S3 + '/publishers/minecraft-b9683d42.png',    alt: 'Minecraft' },
-      { url: S3 + '/publishers/roblox-72205627.png',       alt: 'Roblox' },
-    ],
-    estrategia: [
-      { url: S3 + '/publishers/clashroyale-da945d9a.png',  alt: 'Clash Royale' },
-      { url: S3 + '/publishers/brawlstar-870674e2.png',    alt: 'Brawl Stars' },
-      { url: S3 + '/games/monou-attack-b91891f9.png',     alt: 'Monou Attack' },
-      { url: S3 + '/publishers/minecraft-b9683d42.png',    alt: 'Minecraft' },
-    ],
-    aventura:   [
-      { url: S3 + '/games/monou-attack-b91891f9.png',     alt: 'Monou Attack' },
-      { url: S3 + '/games/monou-bird-402f96d8.png',        alt: 'Monou Bird' },
-      { url: S3 + '/publishers/roblox-72205627.png',       alt: 'Roblox' },
-      { url: S3 + '/publishers/minecraft-b9683d42.png',    alt: 'Minecraft' },
-    ],
-    simulacion: [
-      { url: S3 + '/games/monou-pacman-c85cd485.png',      alt: 'Monou Pacman' },
-      { url: S3 + '/publishers/roblox-72205627.png',       alt: 'Roblox' },
-      { url: S3 + '/games/monou-bird-402f96d8.png',        alt: 'Monou Bird' },
-      { url: S3 + '/publishers/minecraft-b9683d42.png',    alt: 'Minecraft' },
-    ],
-    deportes:   [
-      { url: S3 + '/publishers/brawlstar-870674e2.png',    alt: 'Brawl Stars' },
-      { url: S3 + '/publishers/clashroyale-da945d9a.png',  alt: 'Clash Royale' },
-      { url: S3 + '/games/monou-attack-b91891f9.png',     alt: 'Monou Attack' },
-      { url: S3 + '/games/monou-pacman-c85cd485.png',      alt: 'Monou Pacman' },
-    ],
+    carreras:   [ATTACK,  BRAWL,   PACMAN,  CLASHR],
+    puzzles:    [BIRD,    PACMAN,  MINEC,   ROBLOX],
+    accion:     [ATTACK,  BRAWL,   CLASHR,  MINEC],
+    plataforma: [PACMAN,  BIRD,    ROBLOX,  MINEC],
+    estrategia: [CLASHR,  MINEC,   BRAWL,   ATTACK],
+    aventura:   [ATTACK,  ROBLOX,  BIRD,    MINEC],
+    simulacion: [PACMAN,  MINEC,   BIRD,    ROBLOX],
+    deportes:   [BRAWL,   CLASHR,  ATTACK,  PACMAN],
   };
 
   // ─── Utils ────────────────────────────────────────────────────────────
