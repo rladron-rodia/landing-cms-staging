@@ -30,6 +30,61 @@
   API_BASE = API_BASE.replace(/\/+$/, '');
   var CD = API_BASE + '/api/public/cms-landing';
 
+  // Bucket público del landing viejo (ya hospeda imágenes aprobadas de juegos F2P).
+  // Fallback por categoría cuando game_assets.thumbnail_url viene null. Mezcla
+  // de monou-* (propios) + publishers/* (minecraft, roblox, etc.) para variedad.
+  var S3 = 'https://monou-landing-images-prod.s3.us-east-1.amazonaws.com';
+  var WALL_FALLBACK = {
+    carreras:   [
+      { url: S3 + '/games/monou-attack-b91891f9.png',     alt: 'Monou Attack' },
+      { url: S3 + '/games/monou-pacman-c85cd485.png',     alt: 'Monou Pacman' },
+      { url: S3 + '/publishers/brawlstar-870674e2.png',    alt: 'Brawl Stars' },
+      { url: S3 + '/publishers/clashroyale-da945d9a.png',  alt: 'Clash Royale' },
+    ],
+    puzzles:    [
+      { url: S3 + '/games/monou-bird-402f96d8.png',        alt: 'Monou Bird' },
+      { url: S3 + '/games/monou-pacman-c85cd485.png',      alt: 'Monou Pacman' },
+      { url: S3 + '/publishers/minecraft-b9683d42.png',    alt: 'Minecraft' },
+      { url: S3 + '/publishers/roblox-72205627.png',       alt: 'Roblox' },
+    ],
+    accion:     [
+      { url: S3 + '/games/monou-attack-b91891f9.png',     alt: 'Monou Attack' },
+      { url: S3 + '/publishers/brawlstar-870674e2.png',    alt: 'Brawl Stars' },
+      { url: S3 + '/publishers/clashroyale-da945d9a.png',  alt: 'Clash Royale' },
+      { url: S3 + '/games/monou-pacman-c85cd485.png',      alt: 'Monou Pacman' },
+    ],
+    plataforma: [
+      { url: S3 + '/games/monou-bird-402f96d8.png',        alt: 'Monou Bird' },
+      { url: S3 + '/games/monou-pacman-c85cd485.png',      alt: 'Monou Pacman' },
+      { url: S3 + '/publishers/minecraft-b9683d42.png',    alt: 'Minecraft' },
+      { url: S3 + '/publishers/roblox-72205627.png',       alt: 'Roblox' },
+    ],
+    estrategia: [
+      { url: S3 + '/publishers/clashroyale-da945d9a.png',  alt: 'Clash Royale' },
+      { url: S3 + '/publishers/brawlstar-870674e2.png',    alt: 'Brawl Stars' },
+      { url: S3 + '/games/monou-attack-b91891f9.png',     alt: 'Monou Attack' },
+      { url: S3 + '/publishers/minecraft-b9683d42.png',    alt: 'Minecraft' },
+    ],
+    aventura:   [
+      { url: S3 + '/games/monou-attack-b91891f9.png',     alt: 'Monou Attack' },
+      { url: S3 + '/games/monou-bird-402f96d8.png',        alt: 'Monou Bird' },
+      { url: S3 + '/publishers/roblox-72205627.png',       alt: 'Roblox' },
+      { url: S3 + '/publishers/minecraft-b9683d42.png',    alt: 'Minecraft' },
+    ],
+    simulacion: [
+      { url: S3 + '/games/monou-pacman-c85cd485.png',      alt: 'Monou Pacman' },
+      { url: S3 + '/publishers/roblox-72205627.png',       alt: 'Roblox' },
+      { url: S3 + '/games/monou-bird-402f96d8.png',        alt: 'Monou Bird' },
+      { url: S3 + '/publishers/minecraft-b9683d42.png',    alt: 'Minecraft' },
+    ],
+    deportes:   [
+      { url: S3 + '/publishers/brawlstar-870674e2.png',    alt: 'Brawl Stars' },
+      { url: S3 + '/publishers/clashroyale-da945d9a.png',  alt: 'Clash Royale' },
+      { url: S3 + '/games/monou-attack-b91891f9.png',     alt: 'Monou Attack' },
+      { url: S3 + '/games/monou-pacman-c85cd485.png',      alt: 'Monou Pacman' },
+    ],
+  };
+
   // ─── Utils ────────────────────────────────────────────────────────────
   function fmt(n) {
     if (n === null || n === undefined || n === '') return null;
@@ -100,20 +155,34 @@
             var curr = document.documentElement.lang || 'es';
             text(el, curr === 'en' ? c.title_en : c.title_es);
           });
-          // wall of games: swap FA icons with real thumbnails when available
+          // wall of games: swap FA icons with real thumbnails.
+          // Prioridad: 1) thumbnail_url del endpoint (si existe en game_assets),
+          //            2) fallback estático desde el bucket público del landing viejo
+          //               (monou-landing-images-prod.s3) por categoría.
           var wall = card.querySelector('.game-wall[data-category-slug-wall="' + c.slug + '"]');
-          if (wall && Array.isArray(c.games) && c.games.length) {
+          if (wall) {
             var slots = wall.querySelectorAll('.game-tile');
-            c.games.slice(0, slots.length).forEach(function (g, i) {
+            var liveGames = Array.isArray(c.games) ? c.games : [];
+            var fallback = WALL_FALLBACK[c.slug] || [];
+            // merge: live first, fallback después
+            var sources = [];
+            liveGames.forEach(function (g) { if (g && g.thumbnail_url) sources.push({ url: g.thumbnail_url, alt: g.title || g.slug }); });
+            fallback.forEach(function (u) { sources.push({ url: u.url, alt: u.alt || c.slug }); });
+
+            sources.slice(0, slots.length).forEach(function (src, i) {
               var slot = slots[i];
-              if (!g.thumbnail_url || !slot) return;
-              // replace icon with <img>
+              if (!slot) return;
               slot.innerHTML = '';
               var img = document.createElement('img');
-              img.src = g.thumbnail_url;
-              img.alt = g.title || g.slug;
+              img.src = src.url;
+              img.alt = src.alt;
               img.loading = 'lazy';
               img.decoding = 'async';
+              img.style.width = '100%';
+              img.style.height = '100%';
+              img.style.objectFit = 'cover';
+              img.style.display = 'block';
+              img.onerror = function () { this.style.display = 'none'; };
               slot.appendChild(img);
             });
           }
