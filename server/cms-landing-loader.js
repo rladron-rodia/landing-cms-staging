@@ -128,30 +128,38 @@
           if (c.title_en) el.setAttribute('data-en', c.title_en);
           text(el, curr === 'en' ? (c.title_en || c.title_es) : (c.title_es || c.title_en));
         });
-        // wall: llenar los tiles con thumbnails reales (si fallan, tile vacío)
+        // wall: generar 9 tiles dinamicos (3x3) con thumbnails reales, ignorando
+        // los slots hardcodeados del HTML heredado (8 tiles) para evitar empalmes.
         var wall = card.querySelector('.game-wall');
         if (wall) {
           wall.setAttribute('data-category-slug-wall', c.slug);
-          var slots = wall.querySelectorAll('.game-tile');
           var liveGames = (Array.isArray(c.games) ? c.games : []).filter(function (g) {
             return g && g.thumbnail_url;
           });
-          slots.forEach(function (slot, i) {
-            slot.innerHTML = '';
+          wall.innerHTML = '';
+          var N = 9;  // 3x3
+          for (var i = 0; i < N; i++) {
+            var slot = document.createElement('span');
+            slot.className = 'game-tile';
+            slot.setAttribute('data-game-slot', String(i));
             var g = liveGames[i];
-            if (!g) return;  // tile sin juego → queda vacío
-            var img = document.createElement('img');
-            img.src = g.thumbnail_url;
-            img.alt = g.title || g.slug;
-            img.loading = 'lazy';
-            img.decoding = 'async';
-            img.style.width = '100%';
-            img.style.height = '100%';
-            img.style.objectFit = 'cover';
-            img.style.display = 'block';
-            img.onerror = function () { this.style.display = 'none'; };
-            slot.appendChild(img);
-          });
+            if (g) {
+              var img = document.createElement('img');
+              var thumb = g.thumbnail_url || '';
+              if (thumb.charAt(0) === '/') thumb = API_BASE + thumb;
+              img.src = thumb;
+              img.alt = g.title || g.slug;
+              img.loading = 'lazy';
+              img.decoding = 'async';
+              img.style.width = '100%';
+              img.style.height = '100%';
+              img.style.objectFit = 'cover';
+              img.style.display = 'block';
+              img.onerror = function () { this.style.display = 'none'; };
+              slot.appendChild(img);
+            }
+            wall.appendChild(slot);
+          }
         }
       }
 
