@@ -1,0 +1,1159 @@
+<html lang="es"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ═══ SEO Primary ═══ -->
+    <title>Gameplay Datasets para IA y World Models | Monou Labs</title>
+    <meta name="description" content="+10K horas de gameplay capturado, curado y etiquetado. Datasets para Reinforcement Learning, Behavior Cloning y World Models. Juegos F2P y AAA. Entrega vía S3 o API REST.">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Monou Labs">
+    <link rel="canonical" href="https://monoulabs.ai/">
+
+    <!-- ═══ Hreflang — solo ES indexable. Toggle EN sigue activo como UX feature (data-en + JS),
+         pero no se declara como URL alternativa porque sirve HTML idéntico al ES (Audit v3 Opción B). ═══ -->
+    <link rel="alternate" hreflang="es" href="https://monoulabs.ai/">
+    <link rel="alternate" hreflang="x-default" href="https://monoulabs.ai/">
+
+    <!-- ═══ Open Graph (LinkedIn, Slack, Facebook) ═══ -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://monoulabs.ai/">
+    <meta property="og:title" content="Gameplay Datasets para IA y World Models | Monou Labs">
+    <meta property="og:description" content="+10K horas de gameplay curado para entrenar agentes de IA. Datasets para Reinforcement Learning y Behavior Cloning con telemetría completa.">
+    <meta property="og:image" content="https://monoulabs.ai/og-preview.png">
+    <meta property="og:image:secure_url" content="https://monoulabs.ai/og-preview.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Monou Labs — Gameplay Datasets para entrenar agentes de IA">
+    <meta property="og:locale" content="es_MX">
+    <meta property="og:locale:alternate" content="en_US">
+    <meta property="og:site_name" content="Monou Labs">
+
+    <!-- ═══ Twitter Card (X / algunas vistas de Slack) ═══ -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Gameplay Datasets for AI Training | Monou Labs">
+    <meta name="twitter:description" content="+10K hours of curated gameplay data for training AI agents. Datasets for RL, Behavior Cloning, World Models.">
+    <meta name="twitter:image" content="https://monoulabs.ai/og-preview.png">
+    <meta name="twitter:image:alt" content="Monou Labs — Gameplay Datasets para entrenar agentes de IA">
+    <meta name="twitter:site" content="@monoulabs">
+    <meta name="twitter:creator" content="@monoulabs">
+
+    <!-- ═══ Performance hints — DNS-prefetch only (v2.5.1) ═══
+         Antes había <link rel="preconnect"> a S3 y a api.monoulabs.ai;
+         PageSpeed reportó "preconnect no usado" porque ninguno está en
+         el critical path para LCP:
+           - S3: las imágenes son loading="lazy" (no se piden en paint inicial).
+           - API: solo se llama en submit del formulario (post-LCP).
+         Mantenemos dns-prefetch (cheap, no warning) y soltamos preconnect. -->
+    <!-- v3.1.2: imágenes migradas a monou-landing-images-prod (WebP + PNG fallback,
+         98% reduction). dns-prefetch al bucket nuevo. -->
+    <link rel="dns-prefetch" href="https://monou-landing-images-prod.s3.us-east-1.amazonaws.com">
+    <link rel="dns-prefetch" href="https://api.monoulabs.ai">
+    <!-- Preconnect a api.monoulabs.ai (v2.5.2 — re-agregado).
+         analytics-loader.js fetcha /api/analytics-config y /api/cta-tags
+         con defer; en algunas corridas de Lighthouse esos fetches caen en
+         critical path y reportó 170ms de ahorro estimado de LCP.
+         crossorigin="" porque fetch() cross-origin sin credentials. -->
+    <link rel="preconnect" href="https://api.monoulabs.ai" crossorigin>
+
+    <!-- ═══ Preload de fuentes críticas LCP (v2.5.1) ═══
+         Inter 400 (body text), 600 (botones del hero) y 700 (H1 hero)
+         están above-the-fold. Sin preload el browser los descubre solo
+         tras parsear el <style> @font-face inline, encadenándolos detrás
+         de tailwind.min.css (Lighthouse: critical chain ~354ms).
+         Con preload arrancan en paralelo al HTML parse y no quedan en
+         serie con Tailwind. -->
+    <link rel="preload" as="font" type="font/woff2" href="assets/fonts/inter-400.woff2" crossorigin>
+    <link rel="preload" as="font" type="font/woff2" href="assets/fonts/inter-600.woff2" crossorigin>
+    <link rel="preload" as="font" type="font/woff2" href="assets/fonts/inter-700.woff2" crossorigin>
+
+    <!-- ═══ Theme & mobile hints ═══ -->
+    <meta name="theme-color" content="#0B0E14">
+    <meta name="color-scheme" content="dark">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="application-name" content="Monou Labs">
+    <meta name="apple-mobile-web-app-title" content="Monou Labs">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <!-- ═══ Favicon ═══ -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎮%3C/text%3E%3C/svg%3E">
+
+    <!-- ═══ Schema.org Dataset (Google Dataset Search — canal zero-competencia) ═══ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "Dataset",
+      "name": "Gameplay Dataset for AI Training — Monou Labs",
+      "alternateName": "Gameplay Datasets para Entrenamiento de IA — Monou Labs",
+      "description": "10,000+ hours of gameplay captured, curated and labeled for training AI agents. Frame-by-frame annotations, input telemetry and event segmentation. Covers 50+ F2P and AAA titles.",
+      "url": "https://monoulabs.ai/",
+      "keywords": [
+        "gameplay dataset",
+        "AI training data",
+        "reinforcement learning dataset",
+        "behavior cloning data",
+        "world model training",
+        "game telemetry",
+        "video game AI",
+        "datos de entrenamiento IA",
+        "dataset de gameplay",
+        "aprendizaje por refuerzo"
+      ],
+      "inLanguage": ["es", "en"],
+      "creator": {
+        "@type": "Organization",
+        "name": "Monou Labs",
+        "url": "https://monoulabs.ai/",
+        "email": "contacto@monoulabs.ai"
+      },
+      "distribution": [
+        { "@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://monoulabs.ai/#contacto" },
+        { "@type": "DataDownload", "encodingFormat": "application/x-ndjson", "contentUrl": "https://monoulabs.ai/#contacto" },
+        { "@type": "DataDownload", "encodingFormat": "application/octet-stream", "contentUrl": "https://monoulabs.ai/#contacto" }
+      ],
+      "measurementTechnique": "Automated gameplay recording, annotation and segmentation",
+      "variableMeasured": ["Player actions", "Game states", "Rewards", "Visual frames", "Input telemetry", "Match segmentation"],
+      "temporalCoverage": "2024/..",
+      "spatialCoverage": "Global",
+      "isAccessibleForFree": false,
+      "license": "https://monoulabs.ai/#data-licenses",
+      "version": "2.0",
+      "datePublished": "2024-01-01",
+      "dateModified": "2026-05-05",
+      "includedInDataCatalog": {
+        "@type": "DataCatalog",
+        "name": "Monou Labs Gameplay Datasets",
+        "url": "https://monoulabs.ai/"
+      }
+    }
+    </script>
+
+    <!-- ═══ Schema.org Organization (entidad — knowledge graph) ═══ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "@id": "https://monoulabs.ai/#organization",
+      "name": "Monou Labs",
+      "alternateName": ["monoulabs.ai", "Monou.gg"],
+      "url": "https://monoulabs.ai/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://monoulabs.ai/og-preview.png",
+        "width": 1200,
+        "height": 630
+      },
+      "image": "https://monoulabs.ai/og-preview.png",
+      "description": "Gameplay datasets para entrenamiento de IA — World Models, Reinforcement Learning y Behavior Cloning",
+      "knowsAbout": [
+        "Gameplay datasets",
+        "Reinforcement Learning",
+        "Behavior Cloning",
+        "World Models",
+        "AI training data",
+        "Game telemetry"
+      ],
+      "sameAs": [
+        "https://monoulabs.ai/"
+      ],
+      "contactPoint": [{
+        "@type": "ContactPoint",
+        "email": "contacto@monoulabs.ai",
+        "contactType": "sales",
+        "availableLanguage": ["Spanish", "English"],
+        "areaServed": "Worldwide"
+      }]
+    }
+    </script>
+
+    <!-- ═══ Schema.org Service (oferta B2B — rich results) ═══ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "@id": "https://monoulabs.ai/#service",
+      "serviceType": "AI Training Dataset",
+      "name": "Gameplay Datasets para entrenamiento de IA",
+      "provider": { "@id": "https://monoulabs.ai/#organization" },
+      "areaServed": "Worldwide",
+      "audience": {
+        "@type": "BusinessAudience",
+        "audienceType": "ML Engineers, RL Researchers, AI Labs"
+      },
+      "description": "10K+ horas de gameplay curado y etiquetado para World Models, Reinforcement Learning y Behavior Cloning. Cobertura de 50+ juegos F2P y títulos AAA, entrega vía S3 o API REST.",
+      "offers": {
+        "@type": "Offer",
+        "url": "https://monoulabs.ai/#contacto",
+        "availability": "https://schema.org/InStock",
+        "priceSpecification": {
+          "@type": "PriceSpecification",
+          "priceCurrency": "USD",
+          "description": "Pricing on request — contact sales for custom dataset packages"
+        }
+      },
+      "category": "Data as a Service (DaaS)",
+      "termsOfService": "https://monoulabs.ai/#privacy"
+    }
+    </script>
+
+    <!-- ═══ Schema.org WebSite (search action + sitelinks) ═══ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Monou Labs",
+      "url": "https://monoulabs.ai/",
+      "inLanguage": ["es", "en"],
+      "publisher": {
+        "@type": "Organization",
+        "name": "Monou Labs"
+      }
+    }
+    </script>
+
+    <!-- ═══ Critical CSS inline (v2.4.2 — above-the-fold, evita FOUC + render-blocking) ═══ -->
+    <style>
+      /* Reset mínimo + variables de marca + estado above-the-fold inicial.
+         Tailwind y FA cargan async después; este bloque garantiza que el hero
+         se vea correcto desde el primer paint. */
+      *,*::before,*::after{box-sizing:border-box}
+      html{-webkit-text-size-adjust:100%;tab-size:4}
+      body{margin:0;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;line-height:1.5;background:#0B0E14;color:#fff;-webkit-font-smoothing:antialiased}
+      img,svg{display:block;max-width:100%;height:auto}
+      .min-h-screen{min-height:100vh}
+      .bg-dark-900{background:#0B0E14}
+      .text-white{color:#fff}
+      .text-gray-400{color:#9ca3af}
+      [hidden]{display:none}
+    </style>
+
+    <!-- ═══ CSS / fonts / scripts (v2.4.3) ═══ -->
+    <!-- Tailwind compilado estático (25 KB) — carga SÍNCRONA porque define el
+         layout (flex, grid, spacing). Cargarlo async causaba CLS masivo (0.76)
+         porque el HTML se pintaba antes con clases pt-32, gap-32, etc. sin
+         efecto, y al llegar Tailwind se reposicionaba todo. v2.4.2 intentó
+         async; v2.4.3 revierte a sync para CLS < 0.1. -->
+    <!-- ═══ Tailwind inlined (v2.5.2) ═══
+         25KB raw / ~6KB Brotli. Antes era <link rel="stylesheet" href="...">
+         que generaba critical chain monoulabs.ai → tailwind.min.css en
+         Lighthouse. Inlinearlo elimina el round-trip completo (~140-170ms
+         de LCP en mobile slow 4G). Trade-off: HTML +25KB en cada request
+         vs. CSS cacheado 1 año en Cloudflare. Net positive para visitantes
+         primerizos (mayoría del tráfico B2B). -->
+    <style id="tailwind-inlined">*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:Inter,sans-serif;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.\!container{width:100%!important}.container{width:100%}@media (min-width:640px){.\!container{max-width:640px!important}.container{max-width:640px}}@media (min-width:768px){.\!container{max-width:768px!important}.container{max-width:768px}}@media (min-width:1024px){.\!container{max-width:1024px!important}.container{max-width:1024px}}@media (min-width:1280px){.\!container{max-width:1280px!important}.container{max-width:1280px}}@media (min-width:1536px){.\!container{max-width:1536px!important}.container{max-width:1536px}}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}.pointer-events-none{pointer-events:none}.visible{visibility:visible}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0}.left-1\/2{left:50%}.left-\[16\%\]{left:16%}.right-\[16\%\]{right:16%}.top-0{top:0}.top-8{top:2rem}.z-0{z-index:0}.z-10{z-index:10}.z-50{z-index:50}.m-0{margin:0}.-mx-6{margin-left:-1.5rem;margin-right:-1.5rem}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:.25rem}.mb-10{margin-bottom:2.5rem}.mb-12{margin-bottom:3rem}.mb-16{margin-bottom:4rem}.mb-2{margin-bottom:.5rem}.mb-3{margin-bottom:.75rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-6{margin-bottom:1.5rem}.mb-8{margin-bottom:2rem}.mr-2{margin-right:.5rem}.mt-1{margin-top:.25rem}.mt-3{margin-top:.75rem}.mt-4{margin-top:1rem}.mt-8{margin-top:2rem}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.hidden{display:none}.aspect-square{aspect-ratio:1/1}.aspect-video{aspect-ratio:16/9}.h-10{height:2.5rem}.h-12{height:3rem}.h-16{height:4rem}.h-2{height:.5rem}.h-24{height:6rem}.h-\[600px\]{height:600px}.h-full{height:100%}.h-px{height:1px}.min-h-screen{min-height:100vh}.w-10{width:2.5rem}.w-12{width:3rem}.w-16{width:4rem}.w-2{width:.5rem}.w-24{width:6rem}.w-64{width:16rem}.w-\[800px\]{width:800px}.w-full{width:100%}.max-w-2xl{max-width:42rem}.max-w-3xl{max-width:48rem}.max-w-4xl{max-width:56rem}.max-w-5xl{max-width:64rem}.max-w-7xl{max-width:80rem}.max-w-md{max-width:28rem}.flex-1{flex:1 1 0%}.flex-shrink-0{flex-shrink:0}.-translate-x-1\/2{--tw-translate-x:-50%}.-translate-x-1\/2,.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(.4,0,.6,1) infinite}.cursor-pointer{cursor:pointer}.resize-none{resize:none}.appearance-none{-webkit-appearance:none;-moz-appearance:none;appearance:none}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}.grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.flex-col{flex-direction:column}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-12{gap:3rem}.gap-2{gap:.5rem}.gap-3{gap:.75rem}.gap-32{gap:8rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.space-y-2>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.5rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.5rem*var(--tw-space-y-reverse))}.space-y-3>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.75rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.75rem*var(--tw-space-y-reverse))}.space-y-4>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem*var(--tw-space-y-reverse))}.space-y-6>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem*var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.rounded{border-radius:.25rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:.5rem}.rounded-xl{border-radius:.75rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border-accent-cyan\/30{border-color:rgba(34,211,238,.3)}.border-brand-500\/30{border-color:rgba(20,184,166,.3)}.border-white\/10{border-color:hsla(0,0%,100%,.1)}.border-white\/5{border-color:hsla(0,0%,100%,.05)}.bg-accent-cyan\/10{background-color:rgba(34,211,238,.1)}.bg-accent-cyan\/20{background-color:rgba(34,211,238,.2)}.bg-brand-500{--tw-bg-opacity:1;background-color:rgb(20 184 166/var(--tw-bg-opacity,1))}.bg-brand-500\/10{background-color:rgba(20,184,166,.1)}.bg-brand-500\/20{background-color:rgba(20,184,166,.2)}.bg-dark-800{--tw-bg-opacity:1;background-color:rgb(21 26 35/var(--tw-bg-opacity,1))}.bg-dark-800\/50{background-color:rgba(21,26,35,.5)}.bg-dark-900{--tw-bg-opacity:1;background-color:rgb(11 14 20/var(--tw-bg-opacity,1))}.bg-dark-900\/50{background-color:rgba(11,14,20,.5)}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255/var(--tw-bg-opacity,1))}.bg-gradient-to-b{background-image:linear-gradient(to bottom,var(--tw-gradient-stops))}.bg-gradient-to-br{background-image:linear-gradient(to bottom right,var(--tw-gradient-stops))}.bg-gradient-to-r{background-image:linear-gradient(to right,var(--tw-gradient-stops))}.bg-grid-pattern{background-image:linear-gradient(90deg,#1f2937 1px,transparent 0),linear-gradient(180deg,#1f2937 1px,transparent 0)}.from-accent-cyan{--tw-gradient-from:#22d3ee var(--tw-gradient-from-position);--tw-gradient-to:rgba(34,211,238,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.from-accent-cyan\/20{--tw-gradient-from:rgba(34,211,238,.2) var(--tw-gradient-from-position);--tw-gradient-to:rgba(34,211,238,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.from-accent-cyan\/5{--tw-gradient-from:rgba(34,211,238,.05) var(--tw-gradient-from-position);--tw-gradient-to:rgba(34,211,238,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.from-accent-purple\/20{--tw-gradient-from:rgba(168,85,247,.2) var(--tw-gradient-from-position);--tw-gradient-to:rgba(168,85,247,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.from-accent-purple\/5{--tw-gradient-from:rgba(168,85,247,.05) var(--tw-gradient-from-position);--tw-gradient-to:rgba(168,85,247,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.from-blue-500\/20{--tw-gradient-from:rgba(59,130,246,.2) var(--tw-gradient-from-position);--tw-gradient-to:rgba(59,130,246,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.from-brand-400{--tw-gradient-from:#2dd4bf var(--tw-gradient-from-position);--tw-gradient-to:rgba(45,212,191,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.from-brand-500{--tw-gradient-from:#14b8a6 var(--tw-gradient-from-position);--tw-gradient-to:rgba(20,184,166,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.from-brand-500\/20{--tw-gradient-from:rgba(20,184,166,.2) var(--tw-gradient-from-position);--tw-gradient-to:rgba(20,184,166,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.from-brand-500\/5{--tw-gradient-from:rgba(20,184,166,.05) var(--tw-gradient-from-position);--tw-gradient-to:rgba(20,184,166,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.from-green-500\/20{--tw-gradient-from:rgba(34,197,94,.2) var(--tw-gradient-from-position);--tw-gradient-to:rgba(34,197,94,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.from-orange-500\/20{--tw-gradient-from:rgba(249,115,22,.2) var(--tw-gradient-from-position);--tw-gradient-to:rgba(249,115,22,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.from-pink-500\/20{--tw-gradient-from:rgba(236,72,153,.2) var(--tw-gradient-from-position);--tw-gradient-to:rgba(236,72,153,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.from-purple-500\/20{--tw-gradient-from:rgba(168,85,247,.2) var(--tw-gradient-from-position);--tw-gradient-to:rgba(168,85,247,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.from-red-500\/20{--tw-gradient-from:rgba(239,68,68,.2) var(--tw-gradient-from-position);--tw-gradient-to:rgba(239,68,68,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.from-transparent{--tw-gradient-from:transparent var(--tw-gradient-from-position);--tw-gradient-to:transparent var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.from-yellow-500\/20{--tw-gradient-from:rgba(234,179,8,.2) var(--tw-gradient-from-position);--tw-gradient-to:rgba(234,179,8,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.via-brand-400{--tw-gradient-to:rgba(45,212,191,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),#2dd4bf var(--tw-gradient-via-position),var(--tw-gradient-to)}.via-white\/20{--tw-gradient-to:hsla(0,0%,100%,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),hsla(0,0%,100%,.2) var(--tw-gradient-via-position),var(--tw-gradient-to)}.to-accent-cyan{--tw-gradient-to:#22d3ee var(--tw-gradient-to-position)}.to-accent-cyan\/10{--tw-gradient-to:rgba(34,211,238,.1) var(--tw-gradient-to-position)}.to-accent-cyan\/20{--tw-gradient-to:rgba(34,211,238,.2) var(--tw-gradient-to-position)}.to-accent-purple{--tw-gradient-to:#a855f7 var(--tw-gradient-to-position)}.to-accent-purple\/10{--tw-gradient-to:rgba(168,85,247,.1) var(--tw-gradient-to-position)}.to-brand-500{--tw-gradient-to:#14b8a6 var(--tw-gradient-to-position)}.to-brand-600\/10{--tw-gradient-to:rgba(13,148,136,.1) var(--tw-gradient-to-position)}.to-dark-800{--tw-gradient-to:#151a23 var(--tw-gradient-to-position)}.to-transparent{--tw-gradient-to:transparent var(--tw-gradient-to-position)}.bg-clip-text{-webkit-background-clip:text;background-clip:text}.object-cover{-o-object-fit:cover;object-fit:cover}.p-0{padding:0}.p-12{padding:3rem}.p-4{padding:1rem}.p-6{padding:1.5rem}.p-8{padding:2rem}.px-2{padding-left:.5rem;padding-right:.5rem}.px-3{padding-left:.75rem;padding-right:.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.px-8{padding-left:2rem;padding-right:2rem}.py-1{padding-top:.25rem;padding-bottom:.25rem}.py-1\.5{padding-top:.375rem;padding-bottom:.375rem}.py-12{padding-top:3rem;padding-bottom:3rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.pb-24{padding-bottom:6rem}.pb-4{padding-bottom:1rem}.pt-32{padding-top:8rem}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-5xl{font-size:3rem;line-height:1}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:.75rem;line-height:1rem}.font-bold{font-weight:700}.font-extrabold{font-weight:800}.font-medium{font-weight:500}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-\[1\.1\]{line-height:1.1}.leading-relaxed{line-height:1.625}.tracking-tight{letter-spacing:-.025em}.tracking-wide{letter-spacing:.025em}.tracking-widest{letter-spacing:.1em}.text-secondary{--tw-text-opacity:1;color:rgb(34 211 238/var(--tw-text-opacity,1))}.text-tertiary{--tw-text-opacity:1;color:rgb(168 85 247/var(--tw-text-opacity,1))}.text-blue-400{--tw-text-opacity:1;color:rgb(96 165 250/var(--tw-text-opacity,1))}.text-primary{--tw-text-opacity:1;color:rgb(45 212 191/var(--tw-text-opacity,1))}.text-primary{--tw-text-opacity:1;color:rgb(20 184 166/var(--tw-text-opacity,1))}.text-dark-900{--tw-text-opacity:1;color:rgb(11 14 20/var(--tw-text-opacity,1))}.text-gray-300{--tw-text-opacity:1;color:rgb(209 213 219/var(--tw-text-opacity,1))}.text-gray-400{--tw-text-opacity:1;color:rgb(156 163 175/var(--tw-text-opacity,1))}.text-gray-500{--tw-text-opacity:1;color:rgb(107 114 128/var(--tw-text-opacity,1))}.text-gray-600{--tw-text-opacity:1;color:rgb(75 85 99/var(--tw-text-opacity,1))}.text-green-400{--tw-text-opacity:1;color:rgb(74 222 128/var(--tw-text-opacity,1))}.text-orange-400{--tw-text-opacity:1;color:rgb(251 146 60/var(--tw-text-opacity,1))}.text-pink-400{--tw-text-opacity:1;color:rgb(244 114 182/var(--tw-text-opacity,1))}.text-transparent{color:transparent}.text-white{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.placeholder-gray-600::-moz-placeholder{--tw-placeholder-opacity:1;color:rgb(75 85 99/var(--tw-placeholder-opacity,1))}.placeholder-gray-600::placeholder{--tw-placeholder-opacity:1;color:rgb(75 85 99/var(--tw-placeholder-opacity,1))}.opacity-0{opacity:0}.shadow-\[0_0_30px_rgba\(168\2c 85\2c 247\2c 0\.1\)\]{--tw-shadow:0 0 30px rgba(168,85,247,.1);--tw-shadow-colored:0 0 30px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.shadow-\[0_0_30px_rgba\(20\2c 184\2c 166\2c 0\.1\)\]{--tw-shadow:0 0 30px rgba(20,184,166,.1);--tw-shadow-colored:0 0 30px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.shadow-\[0_0_30px_rgba\(34\2c 211\2c 238\2c 0\.1\)\]{--tw-shadow:0 0 30px rgba(34,211,238,.1);--tw-shadow-colored:0 0 30px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.shadow-\[0_0_50px_rgba\(0\2c 0\2c 0\2c 0\.5\)\]{--tw-shadow:0 0 50px rgba(0,0,0,.5);--tw-shadow-colored:0 0 50px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.outline{outline-style:solid}.blur{--tw-blur:blur(8px)}.blur,.blur-\[120px\]{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.blur-\[120px\]{--tw-blur:blur(120px)}.backdrop-blur-lg{--tw-backdrop-blur:blur(16px)}.backdrop-blur-lg,.backdrop-blur-md{-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.backdrop-blur-md{--tw-backdrop-blur:blur(12px)}.backdrop-filter{-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-colors{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-opacity{transition-property:opacity;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.duration-300{transition-duration:.3s}.selection\:bg-brand-500\/30 ::-moz-selection{background-color:rgba(20,184,166,.3)}.selection\:bg-brand-500\/30 ::selection{background-color:rgba(20,184,166,.3)}.selection\:text-white ::-moz-selection{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.selection\:text-white ::selection{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.selection\:bg-brand-500\/30::-moz-selection{background-color:rgba(20,184,166,.3)}.selection\:bg-brand-500\/30::selection{background-color:rgba(20,184,166,.3)}.selection\:text-white::-moz-selection{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.selection\:text-white::selection{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.hover\:border-accent-cyan\/30:hover{border-color:rgba(34,211,238,.3)}.hover\:border-accent-purple\/30:hover{border-color:rgba(168,85,247,.3)}.hover\:border-brand-500\/30:hover{border-color:rgba(20,184,166,.3)}.hover\:bg-dark-800:hover{--tw-bg-opacity:1;background-color:rgb(21 26 35/var(--tw-bg-opacity,1))}.hover\:bg-gray-100:hover{--tw-bg-opacity:1;background-color:rgb(243 244 246/var(--tw-bg-opacity,1))}.hover\:from-brand-600:hover{--tw-gradient-from:#0d9488 var(--tw-gradient-from-position);--tw-gradient-to:rgba(13,148,136,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.hover\:to-accent-cyan\/90:hover{--tw-gradient-to:rgba(34,211,238,.9) var(--tw-gradient-to-position)}.hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.focus\:border-brand-500:focus{--tw-border-opacity:1;border-color:rgb(20 184 166/var(--tw-border-opacity,1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.focus\:ring-1:focus{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow,0 0 #0000)}.focus\:ring-brand-500:focus{--tw-ring-opacity:1;--tw-ring-color:rgb(20 184 166/var(--tw-ring-opacity,1))}.group:hover .group-hover\:scale-110{--tw-scale-x:1.1;--tw-scale-y:1.1;transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.group:hover .group-hover\:text-white{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.group:hover .group-hover\:opacity-100{opacity:1}.group:hover .group-hover\:shadow-\[0_0_30px_rgba\(20\2c 184\2c 166\2c 0\.3\)\]{--tw-shadow:0 0 30px rgba(20,184,166,.3);--tw-shadow-colored:0 0 30px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}@media (min-width:640px){.sm\:w-auto{width:auto}.sm\:flex-row{flex-direction:row}}@media (min-width:768px){.md\:block{display:block}.md\:flex{display:flex}.md\:hidden{display:none}.md\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.md\:grid-cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}.md\:flex-row{flex-direction:row}.md\:p-12{padding:3rem}.md\:text-4xl{font-size:2.25rem;line-height:2.5rem}.md\:text-7xl{font-size:4.5rem;line-height:1}.md\:text-xl{font-size:1.25rem;line-height:1.75rem}}@media (min-width:1024px){.lg\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.lg\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.lg\:grid-cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}.lg\:grid-cols-5{grid-template-columns:repeat(5,minmax(0,1fr))}}</style>
+    <!-- FontAwesome subset (16 KB) — async OK porque los iconos no son
+         layout-critical (parpadean brevemente en cuadritos hasta que carga,
+         pero no reposicionan otros elementos). -->
+    <link rel="preload" href="assets/css/fa-subset.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="assets/css/fa-subset.min.css"></noscript>
+    <!-- Preload solo de fa-regular-400 (24 KB, usado en iconos above-the-fold).
+         fa-solid-900 (156 KB) NO se preloadea porque no está en el LCP path
+         y bloquea la red para los Inter fonts críticos (v3.1.1 patch). -->
+    <link rel="preload" as="font" type="font/woff2" href="assets/fonts/fa-regular-400.woff2" crossorigin>
+
+    <!-- ═══ Inter font self-hosted (v2.4.2 — eliminamos fonts.googleapis.com 750ms) ═══ -->
+    <!-- @font-face local con font-display:swap y unicode-range latin para reducir peso.
+         Si los woff2 aún no están en assets/fonts/, ver instrucciones en
+         README.md sección "Self-host Inter font". -->
+    <style>
+      @font-face{
+        font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;
+        src:url('assets/fonts/inter-400.woff2') format('woff2');
+        unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+      }
+      @font-face{
+        font-family:'Inter';font-style:normal;font-weight:600;font-display:swap;
+        src:url('assets/fonts/inter-600.woff2') format('woff2');
+        unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+      }
+      @font-face{
+        font-family:'Inter';font-style:normal;font-weight:700;font-display:swap;
+        src:url('assets/fonts/inter-700.woff2') format('woff2');
+        unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+      }
+    </style>
+    <!-- v2.1.5: la config de Tailwind ya está compilada estáticamente en assets/css/tailwind.min.css.
+         Este bloque solo aplica si alguien re-introduce el CDN de Tailwind (dev) — guard contra ReferenceError. -->
+    
+    <style>
+      :root { color-scheme: dark; }
+      body {
+        margin:0; padding:0;
+        background-color:#000a13;
+        color:#ffffff;
+        font-family:'Poppins',sans-serif;
+        overflow-x:hidden;
+      }
+      h1, h2, h3, h4, .font-display, .kpi-number { font-family:'Rubik', sans-serif; }
+
+      .grid-bg {
+        background-size:40px 40px;
+        background-position:center center;
+        opacity:1;
+        mask-image:radial-gradient(circle at center, black 55%, transparent 100%);
+        -webkit-mask-image:radial-gradient(circle at center, black 55%, transparent 100%);
+      }
+      .glass-card {
+        background:rgba(15,31,48,0.7);
+        backdrop-filter:blur(16px);
+        -webkit-backdrop-filter:blur(16px);
+        border:1.5px solid rgba(255,255,255,0.12);
+      }
+      .bg-orb-1,.bg-orb-2 {
+        position:fixed; border-radius:50%; filter:blur(60px);
+        z-index:0; pointer-events:none;
+      }
+      .bg-orb-1 {
+        top:-15%; left:-10%; width:50vw; height:50vw;
+        background:radial-gradient(circle, rgba(112,78,252,.14) 0%, rgba(0,10,19,0) 70%);
+      }
+      .bg-orb-2 {
+        bottom:-20%; right:-10%; width:60vw; height:60vw;
+        background:radial-gradient(circle, rgba(249,31,68,.1) 0%, rgba(0,10,19,0) 70%);
+      }
+      .btn-monou-primary {
+        background:linear-gradient(135deg, #F91F44 0%, #d91739 100%);
+        box-shadow:0 4px 16px rgba(249,31,68,.3);
+        color:#fff; font-weight:700;
+        transition:all .3s cubic-bezier(.4,0,.2,1);
+      }
+      .btn-monou-primary:hover {
+        box-shadow:0 6px 24px rgba(249,31,68,.55), 0 0 20px rgba(249,31,68,.3);
+        transform:translateY(-2px);
+      }
+      .glow-red    { box-shadow:0 0 20px rgba(249,31,68,.4), 0 0 40px rgba(249,31,68,.2); }
+      .glow-violet { box-shadow:0 0 20px rgba(112,78,252,.4), 0 0 40px rgba(112,78,252,.2); }
+      .glow-amber  { box-shadow:0 0 20px rgba(245,158,11,.4), 0 0 40px rgba(245,158,11,.2); }
+      .hover-lift { transition:all .3s cubic-bezier(.4,0,.2,1); }
+      .hover-lift:hover { transform:translateY(-4px); box-shadow:0 12px 40px rgba(0,0,0,.55); }
+
+      .kpi-card { position:relative; overflow:hidden; }
+      .kpi-card::before {
+        content:''; position:absolute; top:0; left:0; width:100%; height:3px;
+        background:linear-gradient(90deg, transparent, rgba(249,31,68,.6), transparent);
+      }
+      .kpi-card.violet::before { background:linear-gradient(90deg, transparent, rgba(112,78,252,.7), transparent); }
+      .kpi-card.amber::before  { background:linear-gradient(90deg, transparent, rgba(245,158,11,.7), transparent); }
+
+      .eyebrow {
+        font-family:'Rubik',sans-serif;
+        font-size:.72rem; font-weight:700;
+        letter-spacing:.14em; text-transform:uppercase;
+        color:#8b92a0;
+      }
+      @keyframes pulseDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.3)} }
+      .pulse-dot { animation:pulseDot 1.6s ease-in-out infinite; }
+
+      @keyframes gradientShift { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+      .text-gradient-monou {
+        background:linear-gradient(135deg, #F91F44 0%, #704EFC 50%, #F59E0B 100%);
+        background-size:200% 200%;
+        -webkit-background-clip:text; background-clip:text;
+        color:transparent;
+        animation:gradientShift 6s ease-in-out infinite;
+      }
+
+      ::-webkit-scrollbar { display:none; }
+      html { scroll-behavior:smooth; }
+
+      .carousel-container { position:relative; overflow:hidden; padding:0 60px; }
+      .carousel-track { display:flex; transition:transform .5s ease-in-out; }
+      .carousel-item { min-width:100%; }
+      .carousel-btn {
+        position:absolute; top:50%; transform:translateY(-50%); z-index:20;
+        background:rgba(15,31,48,.95);
+        backdrop-filter:blur(12px);
+        border:1.5px solid rgba(255,255,255,.15);
+        width:48px; height:48px; border-radius:50%;
+        display:flex; align-items:center; justify-content:center;
+        cursor:pointer; transition:all .3s;
+        box-shadow:0 4px 12px rgba(0,0,0,.3);
+      }
+      .carousel-btn:hover {
+        background:rgba(249,31,68,.2);
+        border-color:rgba(249,31,68,.6);
+        box-shadow:0 0 20px rgba(249,31,68,.3);
+      }
+      .carousel-btn.prev { left:0; }
+      .carousel-btn.next { right:0; }
+      .carousel-indicators { display:flex; gap:8px; justify-content:center; margin-top:16px; }
+      .carousel-indicator {
+        width:8px; height:8px; border-radius:50%;
+        background:rgba(255,255,255,.2);
+        cursor:pointer; transition:all .3s;
+      }
+      .carousel-indicator.active { background:#F91F44; width:24px; border-radius:4px; }
+
+      .lang-switcher { cursor:pointer; user-select:none; }
+      .lang-option { transition:all .3s; }
+      .lang-option.active   { color:#F91F44; font-weight:700; }
+      .lang-option.inactive { color:#8b92a0; }
+    
+      /* v7-fix overlap: carousel y cards con stacking context propio */
+      .carousel-container { isolation: isolate; overflow: hidden; }
+      .carousel-track { align-items: stretch; }
+      .carousel-item {
+        padding: 10px 6px 20px;
+        box-sizing: border-box;
+      }
+      .carousel-item > .grid { height: 100%; }
+      .glass-card {
+        position: relative;
+        z-index: 1;
+      }
+      .glass-card.hover-lift:hover,
+      .glass-card:hover { z-index: 10; }
+      .carousel-btn { z-index: 30; }
+      /* evita que glow neón de un card se cuele sobre el siguiente slide */
+      #juegos-monou .glass-card { contain: layout; }
+    
+      /* v7.2 — mini-wall de logos de juegos por categoría */
+      .game-wall {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        gap: 5px;
+        padding: 10px;
+        width: 100%;
+        height: 100%;
+      }
+      .game-tile {
+        position: relative;
+        display: flex; align-items: center; justify-content: center;
+        background: rgba(0, 10, 19, 0.6);
+        backdrop-filter: blur(6px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 6px;
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .game-tile i {
+        font-size: 0.78rem;
+        opacity: 0.85;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .game-tile img {
+        width: 100%; height: 100%; object-fit: cover; display: block;
+      }
+      .glass-card:hover .game-tile {
+        background: rgba(0, 10, 19, 0.8);
+        border-color: rgba(255, 255, 255, 0.18);
+      }
+      .glass-card:hover .game-tile i {
+        opacity: 1;
+        transform: scale(1.08);
+      }
+      /* mobile scroller — grid 2×2 compacto para no reventar aspect-video 16:9 estrecho */
+      .md\:hidden .game-wall {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        padding: 8px;
+        gap: 4px;
+      }
+    </style>
+    <style data-grapesjs-styles="true">
+      #icyrfq
+      {
+        scrollbar-width: none;
+      }
+
+      #ir9pjh
+      {
+        width: max-content;
+      }
+    </style>
+  
+    <!-- ═══ Backend API base — platform-deploy cms-landing ═══ -->
+    <!-- staging: https://staging.internal.monou.gg · prod: https://internal.monou.gg -->
+    <meta name="api-base" content="https://staging.internal.monou.gg">
+    <script src="server/cms-landing-loader.js" defer></script>
+
+    <!-- ═══ Google Analytics 4 — same tracking stack as plataforma deploy ═══ -->
+    <!-- TODO: replace G-PLACEHOLDER with the real measurement ID from monou (deploy platform uses GA4 property 306153059) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PLACEHOLDER"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-PLACEHOLDER', {
+        'send_page_view': true,
+        'anonymize_ip': true,
+        'page_title': document.title,
+        'page_language': document.documentElement.lang || 'es'
+      });
+      // Track language switch
+      document.addEventListener('click', function(ev){
+        var el = ev.target.closest('[data-lang]');
+        if (!el) return;
+        gtag('event', 'language_switch', { from: document.documentElement.lang, to: el.getAttribute('data-lang') });
+      });
+      // Track CTA clicks
+      document.addEventListener('click', function(ev){
+        var a = ev.target.closest('a[href^="#contacto"], a[href^="#contact"]');
+        if (a) gtag('event', 'cta_contact_click', { location: a.closest('section')?.id || 'nav' });
+      });
+    </script>
+  </head>
+
+  <body class="min-h-screen w-full flex flex-col relative text-gray-300 antialiased selection:bg-brand-500/30 selection:text-white m-0 p-0">
+    <div class="bg-orb-1"></div>
+    <div class="bg-orb-2"></div>
+    <!-- Skip-to-content link (WCAG 2.1 AA) — solo visible al recibir foco con teclado -->
+    <a href="#main" data-es="Saltar al contenido principal" data-en="Skip to main content" class="skip-link">Saltar al contenido principal</a>
+    <div class="fixed inset-0 z-0 bg-grid-pattern grid-bg pointer-events-none">
+    </div>
+    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-secondary/10 blur-[120px] rounded-full pointer-events-none z-0">
+    </div>
+    <header id="header" role="banner" class="fixed top-0 w-full z-50 glass-card border-b border-white/5 transition-all duration-300">
+      <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between"><a href="#" aria-label="Monou Labs — Inicio" class="flex items-center gap-2 group"><span class="font-bold text-lg tracking-tight"><span class="text-white">monoulabs</span><span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">.ai</span></span></a>
+        <nav aria-label="Navegación principal" class="hidden md:flex items-center gap-8"><a href="#metricas" data-es="Métricas del Dataset" data-en="Dataset Metrics" class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Métricas
+            del Dataset</a><a href="#dataset-intelligence" data-es="Dataset Intelligence" data-en="Dataset Intelligence" class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Dataset
+            Intelligence</a><a href="#juegos-monou" data-es="Juegos F2P" data-en="F2P Categories" class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Juegos
+            F2P</a><a href="#formato-entrega" data-es="Formato de Entrega" data-en="Delivery Format" class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Formato
+            de Entrega</a></nav>
+        <div class="flex items-center gap-4">
+          <div class="lang-switcher flex items-center gap-2 text-sm font-medium">
+            <span data-lang="es" class="lang-option inactive">ES</span><span class="text-gray-600">|</span><span data-lang="en" class="lang-option active">EN</span></div><a href="#contacto" data-es="Contáctanos" data-en="Contact Us" class="hidden md:block px-4 py-2 text-sm font-semibold btn-monou-primary rounded-lg transition-colors">Contáctanos</a>
+        </div><button aria-label="Abrir menú de navegación" aria-expanded="false" class="md:hidden text-gray-400 hover:text-white"><i class="fa-solid fa-bars text-xl" aria-hidden="true"></i></button>
+      </div>
+    </header>
+    <main id="main" role="main" class="flex-1 relative z-10 pt-32 pb-24 flex flex-col gap-32">
+      <!-- HERO SECTION -->
+      <section id="hero" aria-label="Propuesta de valor — Gameplay Datasets para IA" class="w-full max-w-5xl mx-auto px-6 text-center flex flex-col items-center">
+        <div data-link-key="dataset_badge" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-dark-800/50 border border-tertiary/30 backdrop-blur-md mb-8">
+          <span class="w-2 h-2 rounded-full bg-tertiary animate-pulse pulse-dot"></span><span data-link-field="label" data-es="Dataset v2.0 ya disponible" data-en="Dataset v2.0 now available" class="text-xs font-medium text-primary">Dataset v2.0 ya
+            disponible</span></div>
+        <h1 class="text-5xl md:text-7xl font-extrabold text-white tracking-tight leading-[1.1] mb-6 max-w-4xl">
+          <span data-es="Gameplay Datasets para" data-en="Gameplay Datasets for">Gameplay Datasets para</span> <br class="hidden md:block"><span data-es="World Models &amp; IA" data-en="World Models &amp; AI" class="text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-tertiary">World
+            Models &amp; IA</span></h1>
+        <p data-es="Entrena agentes de IA con miles de horas de gameplay capturado, curado y etiquetado. Datos masivos de juegos F2P y títulos AAA de terceros." data-en="Train AI agents with thousands of hours of captured, curated and labeled gameplay. Massive data from F2P games and third-party AAA titles." class="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl font-medium">
+          Entrena agentes de IA con miles de horas de gameplay capturado, curado
+          y etiquetado. Datos masivos de juegos F2P y títulos AAA de terceros.
+        </p>
+        <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+          <a href="#contacto" data-es="Contáctanos" data-en="Contact Us" class="w-full sm:w-auto px-8 py-4 btn-monou-primary rounded-xl glow-red transition-all flex items-center justify-center gap-2">
+            Contáctanos <i class="fa-solid fa-arrow-right text-sm"></i></a><a data-link-key="view_examples" href="#ejemplos" class="w-full sm:w-auto px-8 py-4 glass-card text-white font-medium rounded-xl hover:bg-dark-800 transition-all flex items-center justify-center gap-2 group border-white/10"><i class="fa-solid fa-play text-gray-400 group-hover:text-white transition-colors text-sm"></i><span data-link-field="label" data-es="Ver ejemplos" data-en="View examples">Ver
+              ejemplos</span></a></div>
+      </section><!-- MÉTRICAS DEL DATASET -->
+      <section id="metricas" aria-labelledby="metricas-title" class="w-full max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 id="metricas-title" data-es="Escala diseñada para IA" data-en="Scale designed for AI" class="text-3xl md:text-4xl font-bold text-white mb-4">Escala
+            diseñada para IA</h2>
+          <p data-es="Datos reales de producción, protocolo abierto VVR v1.1, listos para ingerir en tu pipeline de entrenamiento. No son demostraciones de laboratorio." data-en="Production data under the open VVR v1.1 protocol, ready to ingest into your training pipeline. Not laboratory demos." class="text-gray-400 max-w-2xl mx-auto">Datos reales de producción, protocolo abierto VVR v1.1, listos para ingerir en tu pipeline de entrenamiento. No son demostraciones de laboratorio.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="glass-card p-8 rounded-2xl flex flex-col items-center text-center relative overflow-hidden group">
+            <div class="absolute inset-0 bg-gradient-to-b from-primary/8 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+            </div><i class="fa-regular fa-clock text-3xl text-primary mb-6"></i>
+            <h3 data-stat-value="capture_hours" class="text-5xl font-bold text-white mb-2 tracking-tight kpi-number font-black"><span data-live-metric="sessions_total" data-fallback="330K+">330K+</span></h3>
+            <p data-stat-label="capture_hours" data-es="Sesiones humanas capturadas" data-en="Human sessions captured" class="text-sm font-medium text-gray-400 uppercase tracking-wide">
+              Horas de Captura</p>
+          </div>
+          <div class="glass-card p-8 rounded-2xl flex flex-col items-center text-center relative overflow-hidden group">
+            <div class="absolute inset-0 bg-gradient-to-b from-secondary/8 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+            </div><i class="fa-solid fa-film text-3xl text-secondary mb-6"></i>
+            <h3 data-stat-value="indexed_videos" class="text-5xl font-bold text-white mb-2 tracking-tight kpi-number font-black"><span data-live-metric="frames_captured_total" data-fallback="1.1M+">1.1M+</span></h3>
+            <p data-stat-label="indexed_videos" data-es="Frames validados · hash-frozen" data-en="Frames validated · hash-frozen" class="text-sm font-medium text-gray-400 uppercase tracking-wide">
+              Videos Indexados</p>
+          </div>
+          <div class="glass-card p-8 rounded-2xl flex flex-col items-center text-center relative overflow-hidden group">
+            <div class="absolute inset-0 bg-gradient-to-b from-tertiary/8 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+            </div><i class="fa-solid fa-gamepad text-3xl text-tertiary mb-6"></i>
+            <h3 data-stat-value="games_covered" class="text-5xl font-bold text-white mb-2 tracking-tight kpi-number font-black"><span data-live-metric="games_emitting_30d" data-fallback="250+">250+</span></h3>
+            <p data-stat-label="games_covered" data-es="Juegos activos emitiendo VVR" data-en="Active games emitting VVR" class="text-sm font-medium text-gray-400 uppercase tracking-wide">
+              Juegos Cubiertos</p>
+          </div>
+        </div>
+      </section><!-- COMO FUNCIONA (Workflow) -->
+      <section id="como-funciona" aria-labelledby="como-funciona-title" class="w-full max-w-5xl mx-auto px-6">
+        <div class="text-center mb-16">
+          <p class="eyebrow text-primary mb-3">
+            Pipeline</p>
+          <h2 id="como-funciona-title" data-es="¿Cómo funciona nuestro servicio?" data-en="How does our service work?" class="text-3xl md:text-4xl font-bold text-white">¿Cómo funciona
+            nuestro servicio?</h2>
+        </div>
+        <div class="glass-card rounded-2xl p-8 md:p-12 border border-white/5">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+            <div class="hidden md:block absolute top-8 left-[16%] right-[16%] h-px bg-gradient-to-r from-transparent via-white/20 to-transparent">
+            </div>
+            <div class="relative flex flex-col items-center text-center z-10">
+              <div class="w-16 h-16 rounded-2xl bg-dark-800 border border-white/10 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(112,78,252,0.2)]">
+                <i class="fa-solid fa-video text-xl text-white"></i></div>
+              <h4 data-es="1. Captura" data-en="1. Capture" class="text-lg font-semibold text-white mb-2">1. Captura</h4>
+              <p data-es="Grabación masiva de sesiones de juego en alta resolución con metadata de inputs y estados del juego." data-en="Massive recording of game sessions in high resolution with input metadata and game states." class="text-sm text-gray-400 leading-relaxed">Grabación masiva
+                de sesiones de juego en alta resolución con metadata de inputs y
+                estados del juego.</p>
+            </div>
+            <div class="relative flex flex-col items-center text-center z-10">
+              <div class="w-16 h-16 rounded-2xl bg-dark-800 border border-white/10 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(249,31,68,0.2)]">
+                <i class="fa-solid fa-tags text-xl text-white"></i></div>
+              <h4 data-es="2. Etiquetado (Opcional)" data-en="2. Labeling (Optional)" class="text-lg font-semibold text-white mb-2">2. Etiquetado
+                (Opcional)</h4>
+              <p data-es="Anotación de eventos, acciones clave, recompensas y estados visuales para RL y Behavior Cloning." data-en="Annotation of events, key actions, rewards and visual states for RL and Behavior Cloning." class="text-sm text-gray-400 leading-relaxed">Anotación de
+                eventos, acciones clave, recompensas y estados visuales para RL
+                y Behavior Cloning.</p>
+            </div>
+            <div class="relative flex flex-col items-center text-center z-10">
+              <div class="w-16 h-16 rounded-2xl bg-dark-800 border border-white/10 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(245,158,11,0.2)]">
+                <i class="fa-solid fa-server text-xl text-white"></i></div>
+              <h4 data-es="3. Entrega" data-en="3. Delivery" class="text-lg font-semibold text-white mb-2">3. Entrega</h4>
+              <p data-es="Exportación en formatos estructurados listos para ingestión en tu infraestructura de entrenamiento." data-en="Export in structured formats ready for ingestion into your training infrastructure." class="text-sm text-gray-400 leading-relaxed">Exportación en
+                formatos estructurados listos para ingestión en tu
+                infraestructura de entrenamiento.</p>
+            </div>
+          </div>
+        </div>
+      </section><!-- DATASET INTELLIGENCE -->
+      <section id="dataset-intelligence" aria-labelledby="dataset-intelligence-title" class="w-full max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16">
+          <p data-es="Inteligencia de Datos" data-en="Data Intelligence" class="eyebrow text-primary mb-3">
+            Inteligencia de Datos</p>
+          <h2 id="dataset-intelligence-title" class="text-3xl md:text-4xl font-bold text-white mb-4">Dataset
+            Intelligence</h2>
+          <p data-es="Datos estructurados y enriquecidos con metadata avanzada para maximizar el rendimiento de tus modelos." data-en="Structured and enriched data with advanced metadata to maximize your models' performance." class="text-gray-400 max-w-2xl mx-auto">Datos estructurados y
+            enriquecidos con metadata avanzada para maximizar el rendimiento de
+            tus modelos.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="glass-card rounded-2xl p-6 border border-white/5 hover:border-tertiary/30 transition-all group">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-500/20 to-brand-600/10 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+              <i class="fa-solid fa-layer-group text-xl text-primary"></i>
+            </div>
+            <h3 data-es="Multi-Layer Annotations" data-en="Multi-Layer Annotations" class="text-lg font-bold text-white mb-2">Multi-Layer Annotations
+            </h3>
+            <p data-es="Eventos de juego, acciones de jugador, estados de UI y recompensas etiquetadas frame por frame." data-en="Game events, player actions, UI states and rewards labeled frame by frame." class="text-sm text-gray-400 leading-relaxed">Eventos de juego,
+              acciones de jugador, estados de UI y recompensas etiquetadas frame
+              por frame.</p>
+          </div>
+          <div class="glass-card rounded-2xl p-6 border border-white/5 hover:border-secondary/40 transition-all group">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-accent-cyan/20 to-accent-cyan/10 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+              <i class="fa-solid fa-chart-line text-xl text-secondary"></i>
+            </div>
+            <h3 data-es="Stream OSA · acciones humanas" data-en="OSA stream · human actions" class="text-lg font-bold text-white mb-2">Telemetría de Inputs
+            </h3>
+            <p data-es="input_frames + control_frames + pointer_frames alineados teclado+touch · listo para Behavior Cloning y PPO." data-en="input_frames + control_frames + pointer_frames aligned keyboard+touch · ready for Behavioral Cloning and PPO." class="text-sm text-gray-400 leading-relaxed">input_frames + control_frames + pointer_frames alineados teclado+touch · listo para Behavior Cloning y PPO.</p>
+          </div>
+          <div class="glass-card rounded-2xl p-6 border border-white/5 hover:border-accent-purple/30 transition-all group">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-accent-purple/20 to-accent-purple/10 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+              <i class="fa-solid fa-code-branch text-xl text-tertiary"></i>
+            </div>
+            <h3 data-es="Análisis automático de código" data-en="Automatic code analysis" class="text-lg font-bold text-white mb-2">Segmentación Automática
+            </h3>
+            <p data-es="Extracción automática desde el .c3p / Unity: plugins, behaviors, layouts, variables → contexto para generación de agentes." data-en="Automatic extraction from .c3p / Unity: plugins, behaviors, layouts, variables → context for agent generation." class="text-sm text-gray-400 leading-relaxed">Extracción automática desde el .c3p / Unity: plugins, behaviors, layouts, variables → contexto para generación de agentes.</p>
+          </div>
+          <div class="glass-card rounded-2xl p-6 border border-white/5 hover:border-tertiary/30 transition-all group">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-500/20 to-brand-600/10 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+              <i class="fa-solid fa-filter text-xl text-primary"></i></div>
+            <h3 data-es="Query por motor · build · dispositivo" data-en="Query by engine · build · device" class="text-lg font-bold text-white mb-2">Query por motor · build · dispositivo</h3>
+            <p data-es="3 motores soportados: Construct 3 HTML5, Construct 2, Unity WebGL. Query por build, device_type, OS, browser, average_fps y más." data-en="3 supported engines: Construct 3 HTML5, Construct 2, Unity WebGL. Query by build, device_type, OS, browser, average_fps and more." class="text-sm text-gray-400 leading-relaxed">3 motores soportados: Construct 3 HTML5, Construct 2, Unity WebGL. Query por build, device_type, OS, browser, average_fps y más.</p>
+          </div>
+        </div>
+      </section><!-- JUEGOS F2P WITH CAROUSEL -->
+      <section id="juegos-monou" aria-labelledby="juegos-monou-title" class="w-full max-w-7xl mx-auto px-6">
+        <!-- EDITABLE desde /admin/operacion/cms-landing/categorias — datos agrupados por categoría del catálogo monou -->
+        <div class="mb-12">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/30 backdrop-blur-md mb-6">
+            <i class="fa-solid fa-gamepad text-primary text-xs" aria-hidden="true"></i>
+            <span class="eyebrow text-primary">Monou Ecosystem</span>
+          </div>
+          <h2 id="juegos-monou-title" data-es="Catálogo F2P agrupado por categoría" data-en="F2P catalog grouped by category" class="text-3xl md:text-4xl font-display font-black text-white mb-4">Catálogo F2P agrupado por categoría</h2>
+          <p data-es="26 categorías · 250+ juegos emitiendo VVR en vivo · ordenado automáticamente por sesiones y horas capturadas." data-en="26 categories · 250+ games streaming VVR live · automatically sorted by captured sessions and hours." class="text-gray-400 max-w-3xl">26 categorías · 250+ juegos emitiendo VVR en vivo · ordenado automáticamente por sesiones y horas capturadas.</p>
+        </div>
+        <div class="carousel-container relative hidden md:block">
+          <button type="button" onclick="moveCarousel(-1)" aria-label="Slide anterior" class="carousel-btn prev"><i class="fa-solid fa-chevron-left text-white" aria-hidden="true"></i></button>
+          <button type="button" onclick="moveCarousel(1)" aria-label="Slide siguiente" class="carousel-btn next"><i class="fa-solid fa-chevron-right text-white" aria-hidden="true"></i></button>
+          <div id="carouselTrack" class="carousel-track" data-source="live:categorias" data-sort="sessions+hours desc" data-admin-section="/operacion/cms-landing/categorias">
+            <div class="carousel-item">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div data-category-slug="carreras" class="glass-card hover-lift rounded-xl p-6 border border-white/5 hover:border-primary/40 transition-all group cursor-pointer">
+                  <div class="aspect-video bg-gradient-to-br from-primary/12 to-deepBlue/70 rounded-lg mb-4 relative overflow-hidden border border-primary/15"><div class="game-wall" data-category-slug-wall="carreras" data-source="live:game-thumbnails" data-admin-section="/operacion/cms-landing/categorias"><span class="game-tile" data-game-slot="0"><i class="fa-solid fa-car-side text-primary"></i></span><span class="game-tile" data-game-slot="1"><i class="fa-solid fa-flag-checkered text-white/70"></i></span><span class="game-tile" data-game-slot="2"><i class="fa-solid fa-gauge-high text-primary"></i></span><span class="game-tile" data-game-slot="3"><i class="fa-solid fa-road text-white/70"></i></span><span class="game-tile" data-game-slot="4"><i class="fa-solid fa-trophy text-primary"></i></span><span class="game-tile" data-game-slot="5"><i class="fa-solid fa-stopwatch text-white/70"></i></span><span class="game-tile" data-game-slot="6"><i class="fa-solid fa-motorcycle text-primary"></i></span><span class="game-tile" data-game-slot="7"><i class="fa-solid fa-truck-pickup text-white/70"></i></span></div><div class="absolute top-2 right-2 inline-flex items-center gap-1 bg-dark-900/85 backdrop-blur-sm rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-primary border border-primary/30"><i class="fa-solid fa-circle text-[6px] pulse-dot"></i><span data-es="activa" data-en="active">activa</span></div></div><h4 data-category-field="title" data-es="Carreras" data-en="Racing" class="text-base font-display font-bold text-white mb-2">Carreras</h4>
+                  <p data-category-field="description" data-es="Datasets agrupados por categoría. Sesiones humanas capturadas en vivo bajo el protocolo VVR v1.2." data-en="Datasets grouped by category. Human sessions captured live under the VVR v1.2 protocol." class="text-xs text-gray-400 mb-3">Datasets agrupados por categoría. Sesiones humanas capturadas en vivo bajo el protocolo VVR v1.2.</p>
+                  <div class="flex items-center gap-2 text-xs">
+                    <span class="px-2 py-1 bg-dark-900/60 rounded text-gray-300 border border-white/5"><i class="fa-regular fa-user mr-1 text-primary"></i><span data-category-field="sessions" data-live-metric="sessions_count_carreras" data-fallback="58K+">58K+</span></span>
+                    <span class="px-2 py-1 bg-dark-900/60 rounded text-gray-300 border border-white/5"><i class="fa-regular fa-clock mr-1 text-secondary"></i><span data-category-field="hours" data-live-metric="hours_total_carreras" data-fallback="1.2K h">1.2K h</span></span>
+                  </div>
+                </div>
+                <div data-category-slug="puzzles" class="glass-card hover-lift rounded-xl p-6 border border-white/5 hover:border-secondary/40 transition-all group cursor-pointer">
+                  <div class="aspect-video bg-gradient-to-br from-secondary/12 to-deepBlue/70 rounded-lg mb-4 relative overflow-hidden border border-secondary/15"><div class="game-wall" data-category-slug-wall="puzzles" data-source="live:game-thumbnails" data-admin-section="/operacion/cms-landing/categorias"><span class="game-tile" data-game-slot="0"><i class="fa-solid fa-puzzle-piece text-secondary"></i></span><span class="game-tile" data-game-slot="1"><i class="fa-solid fa-cube text-white/70"></i></span><span class="game-tile" data-game-slot="2"><i class="fa-solid fa-brain text-secondary"></i></span><span class="game-tile" data-game-slot="3"><i class="fa-solid fa-shapes text-white/70"></i></span><span class="game-tile" data-game-slot="4"><i class="fa-solid fa-dice text-secondary"></i></span><span class="game-tile" data-game-slot="5"><i class="fa-solid fa-chess-knight text-white/70"></i></span><span class="game-tile" data-game-slot="6"><i class="fa-solid fa-bezier-curve text-secondary"></i></span><span class="game-tile" data-game-slot="7"><i class="fa-solid fa-table-cells text-white/70"></i></span></div><div class="absolute top-2 right-2 inline-flex items-center gap-1 bg-dark-900/85 backdrop-blur-sm rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-secondary border border-secondary/30"><i class="fa-solid fa-circle text-[6px] pulse-dot"></i><span data-es="activa" data-en="active">activa</span></div></div><h4 data-category-field="title" data-es="Puzzles" data-en="Puzzles" class="text-base font-display font-bold text-white mb-2">Puzzles</h4>
+                  <p data-category-field="description" data-es="Datasets agrupados por categoría. Sesiones humanas capturadas en vivo bajo el protocolo VVR v1.2." data-en="Datasets grouped by category. Human sessions captured live under the VVR v1.2 protocol." class="text-xs text-gray-400 mb-3">Datasets agrupados por categoría. Sesiones humanas capturadas en vivo bajo el protocolo VVR v1.2.</p>
+                  <div class="flex items-center gap-2 text-xs">
+                    <span class="px-2 py-1 bg-dark-900/60 rounded text-gray-300 border border-white/5"><i class="fa-regular fa-user mr-1 text-primary"></i><span data-category-field="sessions" data-live-metric="sessions_count_puzzles" data-fallback="95K+">95K+</span></span>
+                    <span class="px-2 py-1 bg-dark-900/60 rounded text-gray-300 border border-white/5"><i class="fa-regular fa-clock mr-1 text-secondary"></i><span data-category-field="hours" data-live-metric="hours_total_puzzles" data-fallback="2.1K h">2.1K h</span></span>
+                  </div>
+                </div>
+                <div data-category-slug="accion" class="glass-card hover-lift rounded-xl p-6 border border-white/5 hover:border-tertiary/40 transition-all group cursor-pointer">
+                  <div class="aspect-video bg-gradient-to-br from-tertiary/12 to-deepBlue/70 rounded-lg mb-4 relative overflow-hidden border border-tertiary/15"><div class="game-wall" data-category-slug-wall="accion" data-source="live:game-thumbnails" data-admin-section="/operacion/cms-landing/categorias"><span class="game-tile" data-game-slot="0"><i class="fa-solid fa-explosion text-tertiary"></i></span><span class="game-tile" data-game-slot="1"><i class="fa-solid fa-bomb text-white/70"></i></span><span class="game-tile" data-game-slot="2"><i class="fa-solid fa-bolt-lightning text-tertiary"></i></span><span class="game-tile" data-game-slot="3"><i class="fa-solid fa-crosshairs text-white/70"></i></span><span class="game-tile" data-game-slot="4"><i class="fa-solid fa-fire text-tertiary"></i></span><span class="game-tile" data-game-slot="5"><i class="fa-solid fa-shield-halved text-white/70"></i></span><span class="game-tile" data-game-slot="6"><i class="fa-solid fa-khanda text-tertiary"></i></span><span class="game-tile" data-game-slot="7"><i class="fa-solid fa-skull text-white/70"></i></span></div><div class="absolute top-2 right-2 inline-flex items-center gap-1 bg-dark-900/85 backdrop-blur-sm rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-tertiary border border-tertiary/30"><i class="fa-solid fa-circle text-[6px] pulse-dot"></i><span data-es="activa" data-en="active">activa</span></div></div><h4 data-category-field="title" data-es="Acción" data-en="Action" class="text-base font-display font-bold text-white mb-2">Acción</h4>
+                  <p data-category-field="description" data-es="Datasets agrupados por categoría. Sesiones humanas capturadas en vivo bajo el protocolo VVR v1.2." data-en="Datasets grouped by category. Human sessions captured live under the VVR v1.2 protocol." class="text-xs text-gray-400 mb-3">Datasets agrupados por categoría. Sesiones humanas capturadas en vivo bajo el protocolo VVR v1.2.</p>
+                  <div class="flex items-center gap-2 text-xs">
+                    <span class="px-2 py-1 bg-dark-900/60 rounded text-gray-300 border border-white/5"><i class="fa-regular fa-user mr-1 text-primary"></i><span data-category-field="sessions" data-live-metric="sessions_count_accion" data-fallback="72K+">72K+</span></span>
+                    <span class="px-2 py-1 bg-dark-900/60 rounded text-gray-300 border border-white/5"><i class="fa-regular fa-clock mr-1 text-secondary"></i><span data-category-field="hours" data-live-metric="hours_total_accion" data-fallback="1.6K h">1.6K h</span></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div data-category-slug="plataforma" class="glass-card hover-lift rounded-xl p-6 border border-white/5 hover:border-secondary/40 transition-all group cursor-pointer">
+                  <div class="aspect-video bg-gradient-to-br from-secondary/12 to-deepBlue/70 rounded-lg mb-4 relative overflow-hidden border border-secondary/15"><div class="game-wall" data-category-slug-wall="plataforma" data-source="live:game-thumbnails" data-admin-section="/operacion/cms-landing/categorias"><span class="game-tile" data-game-slot="0"><i class="fa-solid fa-stairs text-secondary"></i></span><span class="game-tile" data-game-slot="1"><i class="fa-solid fa-mountain text-white/70"></i></span><span class="game-tile" data-game-slot="2"><i class="fa-solid fa-person-running text-secondary"></i></span><span class="game-tile" data-game-slot="3"><i class="fa-solid fa-shoe-prints text-white/70"></i></span><span class="game-tile" data-game-slot="4"><i class="fa-solid fa-person-falling text-secondary"></i></span><span class="game-tile" data-game-slot="5"><i class="fa-solid fa-play text-white/70"></i></span><span class="game-tile" data-game-slot="6"><i class="fa-solid fa-flag text-secondary"></i></span><span class="game-tile" data-game-slot="7"><i class="fa-solid fa-coins text-white/70"></i></span></div><div class="absolute top-2 right-2 inline-flex items-center gap-1 bg-dark-900/85 backdrop-blur-sm rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-secondary border border-secondary/30"><i class="fa-solid fa-circle text-[6px] pulse-dot"></i><span data-es="activa" data-en="active">activa</span></div></div><h4 data-category-field="title" data-es="Plataforma" data-en="Platformer" class="text-base font-display font-bold text-white mb-2">Plataforma</h4>
+                  <p data-category-field="description" data-es="Datasets agrupados por categoría. Sesiones humanas capturadas en vivo bajo el protocolo VVR v1.2." data-en="Datasets grouped by category. Human sessions captured live under the VVR v1.2 protocol." class="text-xs text-gray-400 mb-3">Datasets agrupados por categoría. Sesiones humanas capturadas en vivo bajo el protocolo VVR v1.2.</p>
+                  <div class="flex items-center gap-2 text-xs">
+                    <span class="px-2 py-1 bg-dark-900/60 rounded text-gray-300 border border-white/5"><i class="fa-regular fa-user mr-1 text-primary"></i><span data-category-field="sessions" data-live-metric="sessions_count_plataforma" data-fallback="42K+">42K+</span></span>
+                    <span class="px-2 py-1 bg-dark-900/60 rounded text-gray-300 border border-white/5"><i class="fa-regular fa-clock mr-1 text-secondary"></i><span data-category-field="hours" data-live-metric="hours_total_plataforma" data-fallback="980 h">980 h</span></span>
+                  </div>
+                </div>
+                <div data-category-slug="estrategia" class="glass-card hover-lift rounded-xl p-6 border border-white/5 hover:border-tertiary/40 transition-all group cursor-pointer">
+                  <div class="aspect-video bg-gradient-to-br from-tertiary/12 to-deepBlue/70 rounded-lg mb-4 relative overflow-hidden border border-tertiary/15"><div class="game-wall" data-category-slug-wall="estrategia" data-source="live:game-thumbnails" data-admin-section="/operacion/cms-landing/categorias"><span class="game-tile" data-game-slot="0"><i class="fa-solid fa-chess text-tertiary"></i></span><span class="game-tile" data-game-slot="1"><i class="fa-solid fa-chess-knight text-white/70"></i></span><span class="game-tile" data-game-slot="2"><i class="fa-solid fa-chess-rook text-tertiary"></i></span><span class="game-tile" data-game-slot="3"><i class="fa-solid fa-chess-queen text-white/70"></i></span><span class="game-tile" data-game-slot="4"><i class="fa-solid fa-map text-tertiary"></i></span><span class="game-tile" data-game-slot="5"><i class="fa-solid fa-tower-observation text-white/70"></i></span><span class="game-tile" data-game-slot="6"><i class="fa-solid fa-chess-board text-tertiary"></i></span><span class="game-tile" data-game-slot="7"><i class="fa-solid fa-hourglass-half text-white/70"></i></span></div><div class="absolute top-2 right-2 inline-flex items-center gap-1 bg-dark-900/85 backdrop-blur-sm rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-tertiary border border-tertiary/30"><i class="fa-solid fa-circle text-[6px] pulse-dot"></i><span data-es="activa" data-en="active">activa</span></div></div><h4 data-category-field="title" data-es="Estrategia" data-en="Strategy" class="text-base font-display font-bold text-white mb-2">Estrategia</h4>
+                  <p data-category-field="description" data-es="Datasets agrupados por categoría. Sesiones humanas capturadas en vivo bajo el protocolo VVR v1.2." data-en="Datasets grouped by category. Human sessions captured live under the VVR v1.2 protocol." class="text-xs text-gray-400 mb-3">Datasets agrupados por categoría. Sesiones humanas capturadas en vivo bajo el protocolo VVR v1.2.</p>
+                  <div class="flex items-center gap-2 text-xs">
+                    <span class="px-2 py-1 bg-dark-900/60 rounded text-gray-300 border border-white/5"><i class="fa-regular fa-user mr-1 text-primary"></i><span data-category-field="sessions" data-live-metric="sessions_count_estrategia" data-fallback="38K+">38K+</span></span>
+                    <span class="px-2 py-1 bg-dark-900/60 rounded text-gray-300 border border-white/5"><i class="fa-regular fa-clock mr-1 text-secondary"></i><span data-category-field="hours" data-live-metric="hours_total_estrategia" data-fallback="1.1K h">1.1K h</span></span>
+                  </div>
+                </div>
+                <div data-category-slug="aventura" class="glass-card hover-lift rounded-xl p-6 border border-white/5 hover:border-primary/40 transition-all group cursor-pointer">
+                  <div class="aspect-video bg-gradient-to-br from-primary/12 to-deepBlue/70 rounded-lg mb-4 relative overflow-hidden border border-primary/15"><div class="game-wall" data-category-slug-wall="aventura" data-source="live:game-thumbnails" data-admin-section="/operacion/cms-landing/categorias"><span class="game-tile" data-game-slot="0"><i class="fa-solid fa-compass text-primary"></i></span><span class="game-tile" data-game-slot="1"><i class="fa-solid fa-map-location-dot text-white/70"></i></span><span class="game-tile" data-game-slot="2"><i class="fa-solid fa-tree text-primary"></i></span><span class="game-tile" data-game-slot="3"><i class="fa-solid fa-campground text-white/70"></i></span><span class="game-tile" data-game-slot="4"><i class="fa-solid fa-dungeon text-primary"></i></span><span class="game-tile" data-game-slot="5"><i class="fa-solid fa-dragon text-white/70"></i></span><span class="game-tile" data-game-slot="6"><i class="fa-solid fa-sailboat text-primary"></i></span><span class="game-tile" data-game-slot="7"><i class="fa-solid fa-key text-white/70"></i></span></div><div class="absolute top-2 right-2 inline-flex items-center gap-1 bg-dark-900/85 backdrop-blur-sm rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-primary border border-primary/30"><i class="fa-solid fa-circle text-[6px] pulse-dot"></i><span data-es="activa" data-en="active">activa</span></div></div><h4 data-category-field="title" data-es="Aventura" data-en="Adventure" class="text-base font-display font-bold text-white mb-2">Aventura</h4>
+                  <p data-category-field="description" data-es="Datasets agrupados por categoría. Sesiones humanas capturadas en vivo bajo el protocolo VVR v1.2." data-en="Datasets grouped by category. Human sessions captured live under the VVR v1.2 protocol." class="text-xs text-gray-400 mb-3">Datasets agrupados por categoría. Sesiones humanas capturadas en vivo bajo el protocolo VVR v1.2.</p>
+                  <div class="flex items-center gap-2 text-xs">
+                    <span class="px-2 py-1 bg-dark-900/60 rounded text-gray-300 border border-white/5"><i class="fa-regular fa-user mr-1 text-primary"></i><span data-category-field="sessions" data-live-metric="sessions_count_aventura" data-fallback="27K+">27K+</span></span>
+                    <span class="px-2 py-1 bg-dark-900/60 rounded text-gray-300 border border-white/5"><i class="fa-regular fa-clock mr-1 text-secondary"></i><span data-category-field="hours" data-live-metric="hours_total_aventura" data-fallback="720 h">720 h</span></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div data-category-slug="simulacion" class="glass-card hover-lift rounded-xl p-6 border border-white/5 hover:border-secondary/40 transition-all group cursor-pointer">
+                  <div class="aspect-video bg-gradient-to-br from-secondary/12 to-deepBlue/70 rounded-lg mb-4 relative overflow-hidden border border-secondary/15"><div class="game-wall" data-category-slug-wall="simulacion" data-source="live:game-thumbnails" data-admin-section="/operacion/cms-landing/categorias"><span class="game-tile" data-game-slot="0"><i class="fa-solid fa-microchip text-secondary"></i></span><span class="game-tile" data-game-slot="1"><i class="fa-solid fa-gears text-white/70"></i></span><span class="game-tile" data-game-slot="2"><i class="fa-solid fa-user-tie text-secondary"></i></span><span class="game-tile" data-game-slot="3"><i class="fa-solid fa-cash-register text-white/70"></i></span><span class="game-tile" data-game-slot="4"><i class="fa-solid fa-truck text-secondary"></i></span><span class="game-tile" data-game-slot="5"><i class="fa-solid fa-tractor text-white/70"></i></span><span class="game-tile" data-game-slot="6"><i class="fa-solid fa-building text-secondary"></i></span><span class="game-tile" data-game-slot="7"><i class="fa-solid fa-tools text-white/70"></i></span></div><div class="absolute top-2 right-2 inline-flex items-center gap-1 bg-dark-900/85 backdrop-blur-sm rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-secondary border border-secondary/30"><i class="fa-solid fa-circle text-[6px] pulse-dot"></i><span data-es="activa" data-en="active">activa</span></div></div><h4 data-category-field="title" data-es="Simulación" data-en="Simulation" class="text-base font-display font-bold text-white mb-2">Simulación</h4>
+                  <p data-category-field="description" data-es="Datasets agrupados por categoría. Sesiones humanas capturadas en vivo bajo el protocolo VVR v1.2." data-en="Datasets grouped by category. Human sessions captured live under the VVR v1.2 protocol." class="text-xs text-gray-400 mb-3">Datasets agrupados por categoría. Sesiones humanas capturadas en vivo bajo el protocolo VVR v1.2.</p>
+                  <div class="flex items-center gap-2 text-xs">
+                    <span class="px-2 py-1 bg-dark-900/60 rounded text-gray-300 border border-white/5"><i class="fa-regular fa-user mr-1 text-primary"></i><span data-category-field="sessions" data-live-metric="sessions_count_simulacion" data-fallback="18K+">18K+</span></span>
+                    <span class="px-2 py-1 bg-dark-900/60 rounded text-gray-300 border border-white/5"><i class="fa-regular fa-clock mr-1 text-secondary"></i><span data-category-field="hours" data-live-metric="hours_total_simulacion" data-fallback="540 h">540 h</span></span>
+                  </div>
+                </div>
+                <div data-category-slug="deportes" class="glass-card hover-lift rounded-xl p-6 border border-white/5 hover:border-tertiary/40 transition-all group cursor-pointer">
+                  <div class="aspect-video bg-gradient-to-br from-tertiary/12 to-deepBlue/70 rounded-lg mb-4 relative overflow-hidden border border-tertiary/15"><div class="game-wall" data-category-slug-wall="deportes" data-source="live:game-thumbnails" data-admin-section="/operacion/cms-landing/categorias"><span class="game-tile" data-game-slot="0"><i class="fa-solid fa-futbol text-tertiary"></i></span><span class="game-tile" data-game-slot="1"><i class="fa-solid fa-basketball text-white/70"></i></span><span class="game-tile" data-game-slot="2"><i class="fa-solid fa-baseball text-tertiary"></i></span><span class="game-tile" data-game-slot="3"><i class="fa-solid fa-dumbbell text-white/70"></i></span><span class="game-tile" data-game-slot="4"><i class="fa-solid fa-person-swimming text-tertiary"></i></span><span class="game-tile" data-game-slot="5"><i class="fa-solid fa-person-running text-white/70"></i></span><span class="game-tile" data-game-slot="6"><i class="fa-solid fa-table-tennis-paddle-ball text-tertiary"></i></span><span class="game-tile" data-game-slot="7"><i class="fa-solid fa-bowling-ball text-white/70"></i></span></div><div class="absolute top-2 right-2 inline-flex items-center gap-1 bg-dark-900/85 backdrop-blur-sm rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-tertiary border border-tertiary/30"><i class="fa-solid fa-circle text-[6px] pulse-dot"></i><span data-es="activa" data-en="active">activa</span></div></div><h4 data-category-field="title" data-es="Deportes" data-en="Sports" class="text-base font-display font-bold text-white mb-2">Deportes</h4>
+                  <p data-category-field="description" data-es="Datasets agrupados por categoría. Sesiones humanas capturadas en vivo bajo el protocolo VVR v1.2." data-en="Datasets grouped by category. Human sessions captured live under the VVR v1.2 protocol." class="text-xs text-gray-400 mb-3">Datasets agrupados por categoría. Sesiones humanas capturadas en vivo bajo el protocolo VVR v1.2.</p>
+                  <div class="flex items-center gap-2 text-xs">
+                    <span class="px-2 py-1 bg-dark-900/60 rounded text-gray-300 border border-white/5"><i class="fa-regular fa-user mr-1 text-primary"></i><span data-category-field="sessions" data-live-metric="sessions_count_deportes" data-fallback="14K+">14K+</span></span>
+                    <span class="px-2 py-1 bg-dark-900/60 rounded text-gray-300 border border-white/5"><i class="fa-regular fa-clock mr-1 text-secondary"></i><span data-category-field="hours" data-live-metric="hours_total_deportes" data-fallback="390 h">390 h</span></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <div class="flex items-center justify-center h-full">
+                <div data-link-key="view_full_catalog" class="glass-card hover-lift rounded-2xl p-12 border border-white/5 hover:border-primary/40 transition-all group cursor-pointer text-center max-w-md">
+                  <div class="w-24 h-24 mx-auto bg-gradient-to-br from-primary/15 to-secondary/15 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform glow-red">
+                    <i class="fa-solid fa-grid-2-plus text-4xl text-transparent bg-clip-text bg-gradient-to-br from-primary to-secondary"></i>
+                  </div>
+                  <h3 data-es="26 categorías · 250+ juegos" data-en="26 categories · 250+ games" class="text-2xl font-display font-black text-white mb-4">26 categorías · 250+ juegos</h3>
+                  <p data-es="El catálogo completo se ordena automáticamente por volumen de sesiones y horas capturadas. Nuevas categorías se incorporan al pipeline cada mes." data-en="The complete catalog is sorted automatically by session volume and captured hours. New categories join the pipeline every month." class="text-gray-400 mb-6 leading-relaxed">El catálogo completo se ordena automáticamente por volumen de sesiones y horas capturadas. Nuevas categorías se incorporan al pipeline cada mes.</p>
+                  <div data-link-field="cta" class="inline-flex items-center gap-2 px-6 py-3 btn-monou-primary rounded-xl glow-red">
+                    <span data-link-field="label" data-es="Solicitar catálogo completo" data-en="Request full catalog">Solicitar catálogo completo</span><i class="fa-solid fa-arrow-right text-sm"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="carouselIndicators" class="carousel-indicators" role="tablist" aria-label="Catálogo F2P — selector de slide">
+            <button type="button" onclick="goToSlide(0)" class="carousel-indicator active" role="tab" aria-label="Ir al slide 1" aria-selected="true"></button>
+            <button type="button" onclick="goToSlide(1)" class="carousel-indicator" role="tab" aria-label="Ir al slide 2" aria-selected="false"></button>
+            <button type="button" onclick="goToSlide(2)" class="carousel-indicator" role="tab" aria-label="Ir al slide 3" aria-selected="false"></button>
+            <button type="button" onclick="goToSlide(3)" class="carousel-indicator" role="tab" aria-label="Ir al slide 4" aria-selected="false"></button>
+          </div>
+        </div>
+        <div id="icyrfq" data-nosnippet aria-label="Catálogo F2P — vista móvil" class="md:hidden overflow-x-auto -mx-6 px-6 pb-4">
+          <div id="ir9pjh" class="flex gap-4" data-source="live:categorias" data-sort="sessions+hours desc" data-admin-section="/operacion/cms-landing/categorias">
+
+            <div data-category-slug="carreras" class="glass-card hover-lift rounded-xl p-4 border border-white/5 hover:border-primary/40 transition-all w-64 flex-shrink-0">
+              <div class="aspect-video bg-gradient-to-br from-primary/12 to-deepBlue/70 rounded-lg mb-3 relative overflow-hidden border border-primary/15"><div class="game-wall" data-category-slug-wall="carreras" data-source="live:game-thumbnails" data-admin-section="/operacion/cms-landing/categorias"><span class="game-tile" data-game-slot="0"><i class="fa-solid fa-car-side text-primary"></i></span><span class="game-tile" data-game-slot="1"><i class="fa-solid fa-flag-checkered text-white/70"></i></span><span class="game-tile" data-game-slot="2"><i class="fa-solid fa-gauge-high text-primary"></i></span><span class="game-tile" data-game-slot="3"><i class="fa-solid fa-road text-white/70"></i></span><span class="game-tile" data-game-slot="4"><i class="fa-solid fa-trophy text-primary"></i></span><span class="game-tile" data-game-slot="5"><i class="fa-solid fa-stopwatch text-white/70"></i></span><span class="game-tile" data-game-slot="6"><i class="fa-solid fa-motorcycle text-primary"></i></span><span class="game-tile" data-game-slot="7"><i class="fa-solid fa-truck-pickup text-white/70"></i></span></div><div class="absolute top-1.5 right-1.5 inline-flex items-center gap-1 bg-dark-900/85 backdrop-blur-sm rounded-full px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-widest text-primary border border-primary/30"><i class="fa-solid fa-circle text-[5px] pulse-dot"></i>activa</div></div><h4 data-category-field="title" data-es="Carreras" data-en="Racing" class="text-sm font-display font-bold text-white mb-1">Carreras</h4>
+              <p data-category-field="description" data-es="Datos agrupados por categoría — ordenado por sesiones + horas." data-en="Data grouped by category — sorted by sessions + hours." class="text-xs text-gray-400 mb-2">Datos agrupados por categoría — ordenado por sesiones + horas.</p>
+              <div class="flex items-center gap-1.5 text-[11px]">
+                <span class="px-1.5 py-0.5 bg-dark-900/60 rounded text-gray-300"><i class="fa-regular fa-user mr-1 text-primary"></i><span data-category-field="sessions" data-fallback="58K+">58K+</span></span>
+                <span class="px-1.5 py-0.5 bg-dark-900/60 rounded text-gray-300"><i class="fa-regular fa-clock mr-1 text-secondary"></i><span data-category-field="hours" data-fallback="1.2K h">1.2K h</span></span>
+              </div>
+            </div>
+            <div data-category-slug="puzzles" class="glass-card hover-lift rounded-xl p-4 border border-white/5 hover:border-secondary/40 transition-all w-64 flex-shrink-0">
+              <div class="aspect-video bg-gradient-to-br from-secondary/12 to-deepBlue/70 rounded-lg mb-3 relative overflow-hidden border border-secondary/15"><div class="game-wall" data-category-slug-wall="puzzles" data-source="live:game-thumbnails" data-admin-section="/operacion/cms-landing/categorias"><span class="game-tile" data-game-slot="0"><i class="fa-solid fa-puzzle-piece text-secondary"></i></span><span class="game-tile" data-game-slot="1"><i class="fa-solid fa-cube text-white/70"></i></span><span class="game-tile" data-game-slot="2"><i class="fa-solid fa-brain text-secondary"></i></span><span class="game-tile" data-game-slot="3"><i class="fa-solid fa-shapes text-white/70"></i></span><span class="game-tile" data-game-slot="4"><i class="fa-solid fa-dice text-secondary"></i></span><span class="game-tile" data-game-slot="5"><i class="fa-solid fa-chess-knight text-white/70"></i></span><span class="game-tile" data-game-slot="6"><i class="fa-solid fa-bezier-curve text-secondary"></i></span><span class="game-tile" data-game-slot="7"><i class="fa-solid fa-table-cells text-white/70"></i></span></div><div class="absolute top-1.5 right-1.5 inline-flex items-center gap-1 bg-dark-900/85 backdrop-blur-sm rounded-full px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-widest text-secondary border border-secondary/30"><i class="fa-solid fa-circle text-[5px] pulse-dot"></i>activa</div></div><h4 data-category-field="title" data-es="Puzzles" data-en="Puzzles" class="text-sm font-display font-bold text-white mb-1">Puzzles</h4>
+              <p data-category-field="description" data-es="Datos agrupados por categoría — ordenado por sesiones + horas." data-en="Data grouped by category — sorted by sessions + hours." class="text-xs text-gray-400 mb-2">Datos agrupados por categoría — ordenado por sesiones + horas.</p>
+              <div class="flex items-center gap-1.5 text-[11px]">
+                <span class="px-1.5 py-0.5 bg-dark-900/60 rounded text-gray-300"><i class="fa-regular fa-user mr-1 text-primary"></i><span data-category-field="sessions" data-fallback="95K+">95K+</span></span>
+                <span class="px-1.5 py-0.5 bg-dark-900/60 rounded text-gray-300"><i class="fa-regular fa-clock mr-1 text-secondary"></i><span data-category-field="hours" data-fallback="2.1K h">2.1K h</span></span>
+              </div>
+            </div>
+            <div data-category-slug="accion" class="glass-card hover-lift rounded-xl p-4 border border-white/5 hover:border-tertiary/40 transition-all w-64 flex-shrink-0">
+              <div class="aspect-video bg-gradient-to-br from-tertiary/12 to-deepBlue/70 rounded-lg mb-3 relative overflow-hidden border border-tertiary/15"><div class="game-wall" data-category-slug-wall="accion" data-source="live:game-thumbnails" data-admin-section="/operacion/cms-landing/categorias"><span class="game-tile" data-game-slot="0"><i class="fa-solid fa-explosion text-tertiary"></i></span><span class="game-tile" data-game-slot="1"><i class="fa-solid fa-bomb text-white/70"></i></span><span class="game-tile" data-game-slot="2"><i class="fa-solid fa-bolt-lightning text-tertiary"></i></span><span class="game-tile" data-game-slot="3"><i class="fa-solid fa-crosshairs text-white/70"></i></span><span class="game-tile" data-game-slot="4"><i class="fa-solid fa-fire text-tertiary"></i></span><span class="game-tile" data-game-slot="5"><i class="fa-solid fa-shield-halved text-white/70"></i></span><span class="game-tile" data-game-slot="6"><i class="fa-solid fa-khanda text-tertiary"></i></span><span class="game-tile" data-game-slot="7"><i class="fa-solid fa-skull text-white/70"></i></span></div><div class="absolute top-1.5 right-1.5 inline-flex items-center gap-1 bg-dark-900/85 backdrop-blur-sm rounded-full px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-widest text-tertiary border border-tertiary/30"><i class="fa-solid fa-circle text-[5px] pulse-dot"></i>activa</div></div><h4 data-category-field="title" data-es="Acción" data-en="Action" class="text-sm font-display font-bold text-white mb-1">Acción</h4>
+              <p data-category-field="description" data-es="Datos agrupados por categoría — ordenado por sesiones + horas." data-en="Data grouped by category — sorted by sessions + hours." class="text-xs text-gray-400 mb-2">Datos agrupados por categoría — ordenado por sesiones + horas.</p>
+              <div class="flex items-center gap-1.5 text-[11px]">
+                <span class="px-1.5 py-0.5 bg-dark-900/60 rounded text-gray-300"><i class="fa-regular fa-user mr-1 text-primary"></i><span data-category-field="sessions" data-fallback="72K+">72K+</span></span>
+                <span class="px-1.5 py-0.5 bg-dark-900/60 rounded text-gray-300"><i class="fa-regular fa-clock mr-1 text-secondary"></i><span data-category-field="hours" data-fallback="1.6K h">1.6K h</span></span>
+              </div>
+            </div>
+            <div data-category-slug="plataforma" class="glass-card hover-lift rounded-xl p-4 border border-white/5 hover:border-secondary/40 transition-all w-64 flex-shrink-0">
+              <div class="aspect-video bg-gradient-to-br from-secondary/12 to-deepBlue/70 rounded-lg mb-3 relative overflow-hidden border border-secondary/15"><div class="game-wall" data-category-slug-wall="plataforma" data-source="live:game-thumbnails" data-admin-section="/operacion/cms-landing/categorias"><span class="game-tile" data-game-slot="0"><i class="fa-solid fa-stairs text-secondary"></i></span><span class="game-tile" data-game-slot="1"><i class="fa-solid fa-mountain text-white/70"></i></span><span class="game-tile" data-game-slot="2"><i class="fa-solid fa-person-running text-secondary"></i></span><span class="game-tile" data-game-slot="3"><i class="fa-solid fa-shoe-prints text-white/70"></i></span><span class="game-tile" data-game-slot="4"><i class="fa-solid fa-person-falling text-secondary"></i></span><span class="game-tile" data-game-slot="5"><i class="fa-solid fa-play text-white/70"></i></span><span class="game-tile" data-game-slot="6"><i class="fa-solid fa-flag text-secondary"></i></span><span class="game-tile" data-game-slot="7"><i class="fa-solid fa-coins text-white/70"></i></span></div><div class="absolute top-1.5 right-1.5 inline-flex items-center gap-1 bg-dark-900/85 backdrop-blur-sm rounded-full px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-widest text-secondary border border-secondary/30"><i class="fa-solid fa-circle text-[5px] pulse-dot"></i>activa</div></div><h4 data-category-field="title" data-es="Plataforma" data-en="Platformer" class="text-sm font-display font-bold text-white mb-1">Plataforma</h4>
+              <p data-category-field="description" data-es="Datos agrupados por categoría — ordenado por sesiones + horas." data-en="Data grouped by category — sorted by sessions + hours." class="text-xs text-gray-400 mb-2">Datos agrupados por categoría — ordenado por sesiones + horas.</p>
+              <div class="flex items-center gap-1.5 text-[11px]">
+                <span class="px-1.5 py-0.5 bg-dark-900/60 rounded text-gray-300"><i class="fa-regular fa-user mr-1 text-primary"></i><span data-category-field="sessions" data-fallback="42K+">42K+</span></span>
+                <span class="px-1.5 py-0.5 bg-dark-900/60 rounded text-gray-300"><i class="fa-regular fa-clock mr-1 text-secondary"></i><span data-category-field="hours" data-fallback="980 h">980 h</span></span>
+              </div>
+            </div>
+            <div data-category-slug="estrategia" class="glass-card hover-lift rounded-xl p-4 border border-white/5 hover:border-tertiary/40 transition-all w-64 flex-shrink-0">
+              <div class="aspect-video bg-gradient-to-br from-tertiary/12 to-deepBlue/70 rounded-lg mb-3 relative overflow-hidden border border-tertiary/15"><div class="game-wall" data-category-slug-wall="estrategia" data-source="live:game-thumbnails" data-admin-section="/operacion/cms-landing/categorias"><span class="game-tile" data-game-slot="0"><i class="fa-solid fa-chess text-tertiary"></i></span><span class="game-tile" data-game-slot="1"><i class="fa-solid fa-chess-knight text-white/70"></i></span><span class="game-tile" data-game-slot="2"><i class="fa-solid fa-chess-rook text-tertiary"></i></span><span class="game-tile" data-game-slot="3"><i class="fa-solid fa-chess-queen text-white/70"></i></span><span class="game-tile" data-game-slot="4"><i class="fa-solid fa-map text-tertiary"></i></span><span class="game-tile" data-game-slot="5"><i class="fa-solid fa-tower-observation text-white/70"></i></span><span class="game-tile" data-game-slot="6"><i class="fa-solid fa-chess-board text-tertiary"></i></span><span class="game-tile" data-game-slot="7"><i class="fa-solid fa-hourglass-half text-white/70"></i></span></div><div class="absolute top-1.5 right-1.5 inline-flex items-center gap-1 bg-dark-900/85 backdrop-blur-sm rounded-full px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-widest text-tertiary border border-tertiary/30"><i class="fa-solid fa-circle text-[5px] pulse-dot"></i>activa</div></div><h4 data-category-field="title" data-es="Estrategia" data-en="Strategy" class="text-sm font-display font-bold text-white mb-1">Estrategia</h4>
+              <p data-category-field="description" data-es="Datos agrupados por categoría — ordenado por sesiones + horas." data-en="Data grouped by category — sorted by sessions + hours." class="text-xs text-gray-400 mb-2">Datos agrupados por categoría — ordenado por sesiones + horas.</p>
+              <div class="flex items-center gap-1.5 text-[11px]">
+                <span class="px-1.5 py-0.5 bg-dark-900/60 rounded text-gray-300"><i class="fa-regular fa-user mr-1 text-primary"></i><span data-category-field="sessions" data-fallback="38K+">38K+</span></span>
+                <span class="px-1.5 py-0.5 bg-dark-900/60 rounded text-gray-300"><i class="fa-regular fa-clock mr-1 text-secondary"></i><span data-category-field="hours" data-fallback="1.1K h">1.1K h</span></span>
+              </div>
+            </div>
+            <div data-category-slug="aventura" class="glass-card hover-lift rounded-xl p-4 border border-white/5 hover:border-primary/40 transition-all w-64 flex-shrink-0">
+              <div class="aspect-video bg-gradient-to-br from-primary/12 to-deepBlue/70 rounded-lg mb-3 relative overflow-hidden border border-primary/15"><div class="game-wall" data-category-slug-wall="aventura" data-source="live:game-thumbnails" data-admin-section="/operacion/cms-landing/categorias"><span class="game-tile" data-game-slot="0"><i class="fa-solid fa-compass text-primary"></i></span><span class="game-tile" data-game-slot="1"><i class="fa-solid fa-map-location-dot text-white/70"></i></span><span class="game-tile" data-game-slot="2"><i class="fa-solid fa-tree text-primary"></i></span><span class="game-tile" data-game-slot="3"><i class="fa-solid fa-campground text-white/70"></i></span><span class="game-tile" data-game-slot="4"><i class="fa-solid fa-dungeon text-primary"></i></span><span class="game-tile" data-game-slot="5"><i class="fa-solid fa-dragon text-white/70"></i></span><span class="game-tile" data-game-slot="6"><i class="fa-solid fa-sailboat text-primary"></i></span><span class="game-tile" data-game-slot="7"><i class="fa-solid fa-key text-white/70"></i></span></div><div class="absolute top-1.5 right-1.5 inline-flex items-center gap-1 bg-dark-900/85 backdrop-blur-sm rounded-full px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-widest text-primary border border-primary/30"><i class="fa-solid fa-circle text-[5px] pulse-dot"></i>activa</div></div><h4 data-category-field="title" data-es="Aventura" data-en="Adventure" class="text-sm font-display font-bold text-white mb-1">Aventura</h4>
+              <p data-category-field="description" data-es="Datos agrupados por categoría — ordenado por sesiones + horas." data-en="Data grouped by category — sorted by sessions + hours." class="text-xs text-gray-400 mb-2">Datos agrupados por categoría — ordenado por sesiones + horas.</p>
+              <div class="flex items-center gap-1.5 text-[11px]">
+                <span class="px-1.5 py-0.5 bg-dark-900/60 rounded text-gray-300"><i class="fa-regular fa-user mr-1 text-primary"></i><span data-category-field="sessions" data-fallback="27K+">27K+</span></span>
+                <span class="px-1.5 py-0.5 bg-dark-900/60 rounded text-gray-300"><i class="fa-regular fa-clock mr-1 text-secondary"></i><span data-category-field="hours" data-fallback="720 h">720 h</span></span>
+              </div>
+            </div>
+            <div data-category-slug="simulacion" class="glass-card hover-lift rounded-xl p-4 border border-white/5 hover:border-secondary/40 transition-all w-64 flex-shrink-0">
+              <div class="aspect-video bg-gradient-to-br from-secondary/12 to-deepBlue/70 rounded-lg mb-3 relative overflow-hidden border border-secondary/15"><div class="game-wall" data-category-slug-wall="simulacion" data-source="live:game-thumbnails" data-admin-section="/operacion/cms-landing/categorias"><span class="game-tile" data-game-slot="0"><i class="fa-solid fa-microchip text-secondary"></i></span><span class="game-tile" data-game-slot="1"><i class="fa-solid fa-gears text-white/70"></i></span><span class="game-tile" data-game-slot="2"><i class="fa-solid fa-user-tie text-secondary"></i></span><span class="game-tile" data-game-slot="3"><i class="fa-solid fa-cash-register text-white/70"></i></span><span class="game-tile" data-game-slot="4"><i class="fa-solid fa-truck text-secondary"></i></span><span class="game-tile" data-game-slot="5"><i class="fa-solid fa-tractor text-white/70"></i></span><span class="game-tile" data-game-slot="6"><i class="fa-solid fa-building text-secondary"></i></span><span class="game-tile" data-game-slot="7"><i class="fa-solid fa-tools text-white/70"></i></span></div><div class="absolute top-1.5 right-1.5 inline-flex items-center gap-1 bg-dark-900/85 backdrop-blur-sm rounded-full px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-widest text-secondary border border-secondary/30"><i class="fa-solid fa-circle text-[5px] pulse-dot"></i>activa</div></div><h4 data-category-field="title" data-es="Simulación" data-en="Simulation" class="text-sm font-display font-bold text-white mb-1">Simulación</h4>
+              <p data-category-field="description" data-es="Datos agrupados por categoría — ordenado por sesiones + horas." data-en="Data grouped by category — sorted by sessions + hours." class="text-xs text-gray-400 mb-2">Datos agrupados por categoría — ordenado por sesiones + horas.</p>
+              <div class="flex items-center gap-1.5 text-[11px]">
+                <span class="px-1.5 py-0.5 bg-dark-900/60 rounded text-gray-300"><i class="fa-regular fa-user mr-1 text-primary"></i><span data-category-field="sessions" data-fallback="18K+">18K+</span></span>
+                <span class="px-1.5 py-0.5 bg-dark-900/60 rounded text-gray-300"><i class="fa-regular fa-clock mr-1 text-secondary"></i><span data-category-field="hours" data-fallback="540 h">540 h</span></span>
+              </div>
+            </div>
+            <div data-category-slug="deportes" class="glass-card hover-lift rounded-xl p-4 border border-white/5 hover:border-tertiary/40 transition-all w-64 flex-shrink-0">
+              <div class="aspect-video bg-gradient-to-br from-tertiary/12 to-deepBlue/70 rounded-lg mb-3 relative overflow-hidden border border-tertiary/15"><div class="game-wall" data-category-slug-wall="deportes" data-source="live:game-thumbnails" data-admin-section="/operacion/cms-landing/categorias"><span class="game-tile" data-game-slot="0"><i class="fa-solid fa-futbol text-tertiary"></i></span><span class="game-tile" data-game-slot="1"><i class="fa-solid fa-basketball text-white/70"></i></span><span class="game-tile" data-game-slot="2"><i class="fa-solid fa-baseball text-tertiary"></i></span><span class="game-tile" data-game-slot="3"><i class="fa-solid fa-dumbbell text-white/70"></i></span><span class="game-tile" data-game-slot="4"><i class="fa-solid fa-person-swimming text-tertiary"></i></span><span class="game-tile" data-game-slot="5"><i class="fa-solid fa-person-running text-white/70"></i></span><span class="game-tile" data-game-slot="6"><i class="fa-solid fa-table-tennis-paddle-ball text-tertiary"></i></span><span class="game-tile" data-game-slot="7"><i class="fa-solid fa-bowling-ball text-white/70"></i></span></div><div class="absolute top-1.5 right-1.5 inline-flex items-center gap-1 bg-dark-900/85 backdrop-blur-sm rounded-full px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-widest text-tertiary border border-tertiary/30"><i class="fa-solid fa-circle text-[5px] pulse-dot"></i>activa</div></div><h4 data-category-field="title" data-es="Deportes" data-en="Sports" class="text-sm font-display font-bold text-white mb-1">Deportes</h4>
+              <p data-category-field="description" data-es="Datos agrupados por categoría — ordenado por sesiones + horas." data-en="Data grouped by category — sorted by sessions + hours." class="text-xs text-gray-400 mb-2">Datos agrupados por categoría — ordenado por sesiones + horas.</p>
+              <div class="flex items-center gap-1.5 text-[11px]">
+                <span class="px-1.5 py-0.5 bg-dark-900/60 rounded text-gray-300"><i class="fa-regular fa-user mr-1 text-primary"></i><span data-category-field="sessions" data-fallback="14K+">14K+</span></span>
+                <span class="px-1.5 py-0.5 bg-dark-900/60 rounded text-gray-300"><i class="fa-regular fa-clock mr-1 text-secondary"></i><span data-category-field="hours" data-fallback="390 h">390 h</span></span>
+              </div>
+            </div>
+
+            <div data-link-key="view_full_catalog" class="glass-card hover-lift rounded-xl p-6 border border-white/5 hover:border-primary/40 transition-all w-64 flex-shrink-0 flex flex-col items-center justify-center text-center">
+              <div class="w-16 h-16 mx-auto bg-gradient-to-br from-primary/15 to-secondary/15 rounded-xl flex items-center justify-center mb-4 overflow-hidden glow-red">
+                <i class="fa-solid fa-grid-2-plus text-2xl text-transparent bg-clip-text bg-gradient-to-br from-primary to-secondary"></i>
+              </div>
+              <h3 data-es="26 categorías · 250+ juegos" data-en="26 categories · 250+ games" class="text-base font-display font-black text-white mb-2">26 categorías · 250+ juegos</h3>
+              <p data-es="Ordenado automáticamente por volumen" data-en="Sorted automatically by volume" class="text-xs text-gray-400 mb-3">Ordenado automáticamente por volumen</p>
+              <div data-link-field="cta" class="inline-flex items-center gap-2 px-4 py-2 btn-monou-primary rounded-lg text-xs">
+                <span data-es="Ver todo" data-en="View all">Ver todo</span><i class="fa-solid fa-arrow-right text-xs"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section><!-- FORMATO DE ENTREGA -->
+      <section id="formato-entrega" aria-labelledby="formato-entrega-title" class="w-full max-w-7xl mx-auto px-6">
+        <!-- EDITABLE desde /admin/operacion/cms-landing/delivery -->
+        <div class="text-center mb-16">
+          <p data-es="Integración" data-en="Integration" class="eyebrow text-primary mb-3">Integración</p>
+          <h2 id="formato-entrega-title" data-es="Formato de entrega" data-en="Delivery Format" class="text-3xl md:text-4xl font-display font-black text-white mb-4">Formato de entrega</h2>
+          <p data-es="Stack VVR v1.2 en producción. Streams binarios versionados + manifest + export para pipelines de entrenamiento." data-en="VVR v1.2 stack in production. Versioned binary streams + manifest + export for training pipelines." class="text-gray-400 max-w-2xl mx-auto">Stack VVR v1.2 en producción. Streams binarios versionados + manifest + export para pipelines de entrenamiento.</p>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div class="glass-card hover-lift rounded-2xl p-8 border border-white/5">
+            <h3 class="text-xl font-display font-bold text-white mb-6 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center">
+                <i class="fa-solid fa-file-code text-primary"></i>
+              </div>
+              <span data-es="Formatos de datos" data-en="Data formats">Formatos de datos</span>
+            </h3>
+            <div class="space-y-4" data-delivery-list="data_formats">
+
+              <div class="flex items-start gap-4 p-4 bg-dark-900/50 rounded-xl border border-white/5">
+                <i class="fa-solid fa-file-zipper text-xl text-primary mt-1"></i>
+                <div class="flex-1">
+                  <h4 class="text-base font-display font-semibold text-white mb-1">VVR binario (.vvr.zst)</h4>
+                  <p data-es="Protocolo abierto · 3 streams por sesión (video + estado + acciones OSA) sincronizados por session_id y epoch-ms." data-en="Open protocol · 3 streams per session (video + state + OSA actions) synchronized by session_id and epoch-ms." class="text-sm text-gray-400">Protocolo abierto · 3 streams por sesión (video + estado + acciones OSA) sincronizados por session_id y epoch-ms.</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4 p-4 bg-dark-900/50 rounded-xl border border-white/5">
+                <i class="fa-solid fa-brackets-curly text-xl text-secondary mt-1"></i>
+                <div class="flex-1">
+                  <h4 class="text-base font-display font-semibold text-white mb-1">Manifest v1.2 (JSON)</h4>
+                  <p data-es="Metadata por juego/build: plugins, layouts, variables, hashes, sidecars. Un manifest firmado por batch." data-en="Metadata per game/build: plugins, layouts, variables, hashes, sidecars. One signed manifest per batch." class="text-sm text-gray-400">Metadata por juego/build: plugins, layouts, variables, hashes, sidecars. Un manifest firmado por batch.</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4 p-4 bg-dark-900/50 rounded-xl border border-white/5">
+                <i class="fa-solid fa-film text-xl text-tertiary mt-1"></i>
+                <div class="flex-1">
+                  <h4 class="text-base font-display font-semibold text-white mb-1">Video WebM VP8</h4>
+                  <p data-es="144×144 grayscale · 15 fps · particionado por sesión · validado con video_ebml_ok." data-en="144×144 grayscale · 15 fps · partitioned per session · validated with video_ebml_ok." class="text-sm text-gray-400">144×144 grayscale · 15 fps · particionado por sesión · validado con video_ebml_ok.</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4 p-4 bg-dark-900/50 rounded-xl border border-white/5">
+                <i class="fa-solid fa-gears text-xl text-gray-400 mt-1"></i>
+                <div class="flex-1">
+                  <h4 data-es="Export ONNX / formato personalizado" data-en="ONNX export / custom format" class="text-base font-display font-semibold text-white mb-1">Export ONNX / formato personalizado</h4>
+                  <p data-es="Export ONNX para inferencia en navegador. También adaptamos a tu stack específico de ML/IA." data-en="ONNX export for in-browser inference. We also adapt to your specific ML/AI stack." class="text-sm text-gray-400">Export ONNX para inferencia en navegador. También adaptamos a tu stack específico de ML/IA.</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="glass-card hover-lift rounded-2xl p-8 border border-white/5">
+            <h3 class="text-xl font-display font-bold text-white mb-6 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-secondary/15 flex items-center justify-center">
+                <i class="fa-solid fa-truck text-secondary"></i>
+              </div>
+              <span data-es="Métodos de entrega" data-en="Delivery methods">Métodos de entrega</span>
+            </h3>
+            <div class="space-y-4" data-delivery-list="delivery_methods">
+
+              <div class="flex items-start gap-4 p-4 bg-dark-900/50 rounded-xl border border-white/5">
+                <i class="fa-solid fa-cloud-arrow-down text-xl text-primary mt-1"></i>
+                <div class="flex-1">
+                  <h4 class="text-base font-display font-semibold text-white mb-1">S3 particionado</h4>
+                  <p data-es="Bucket privado · particionado por juego/fecha · acceso IAM + firmas pre-signed · versionado." data-en="Private bucket · partitioned by game/date · IAM access + pre-signed URLs · versioned." class="text-sm text-gray-400">Bucket privado · particionado por juego/fecha · acceso IAM + firmas pre-signed · versionado.</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4 p-4 bg-dark-900/50 rounded-xl border border-white/5">
+                <i class="fa-solid fa-plug text-xl text-secondary mt-1"></i>
+                <div class="flex-1">
+                  <h4 class="text-base font-display font-semibold text-white mb-1">API REST</h4>
+                  <p data-es="Query por slug · build · categoría · motor · dispositivo · ventana temporal. Paginación + filtros." data-en="Query by slug · build · category · engine · device · time window. Pagination + filters." class="text-sm text-gray-400">Query por slug · build · categoría · motor · dispositivo · ventana temporal. Paginación + filtros.</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4 p-4 bg-dark-900/50 rounded-xl border border-white/5">
+                <i class="fa-solid fa-tower-broadcast text-xl text-tertiary mt-1"></i>
+                <div class="flex-1">
+                  <h4 class="text-base font-display font-semibold text-white mb-1">Ingesta en vivo</h4>
+                  <p data-es="wss://vvr.monoulabs.ai/ingest · stream TLS directo desde el navegador del jugador al pipeline." data-en="wss://vvr.monoulabs.ai/ingest · direct TLS stream from the player's browser into the pipeline." class="text-sm text-gray-400"><code class="font-mono text-xs text-tertiary">wss://vvr.monoulabs.ai/ingest</code> · stream TLS directo desde el navegador del jugador al pipeline.</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4 p-4 bg-dark-900/50 rounded-xl border border-white/5">
+                <i class="fa-solid fa-shield-halved text-xl text-success mt-1"></i>
+                <div class="flex-1">
+                  <h4 class="text-base font-display font-semibold text-white mb-1">Validación hash-frozen</h4>
+                  <p data-es="Cada batch publicado se congela con hash SHA — reproducibilidad total entre corridas de entrenamiento." data-en="Each published batch is frozen with SHA hash — full reproducibility across training runs." class="text-sm text-gray-400">Cada batch publicado se congela con hash SHA — reproducibilidad total entre corridas de entrenamiento.</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section><!-- CONTACTO / FORMULARIO -->
+      <section id="contacto" aria-labelledby="contacto-title" class="w-full max-w-3xl mx-auto px-6">
+        <div class="glass-card rounded-2xl p-8 md:p-12 border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+          <div class="text-center mb-10">
+            <h2 id="contacto-title" data-es="Solicitar Acceso al Dataset" data-en="Request Dataset Access" class="text-3xl font-bold text-white mb-4">Solicitar Acceso al
+              Dataset</h2>
+            <p data-es="Déjanos tus datos y nuestro equipo se pondrá en contacto contigo para discutir tus necesidades de datos de entrenamiento." data-en="Leave us your details and our team will contact you to discuss your training data needs." class="text-gray-400 text-sm">Déjanos tus datos y nuestro equipo
+              se pondrá en contacto contigo para discutir tus necesidades de
+              datos de entrenamiento.</p>
+          </div>
+          <form id="ixmppy" action="javascript:void(0)" method="POST" aria-labelledby="contacto-title" aria-describedby="contacto-form-help" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-2"><label for="contact-nombre" data-es="Nombre completo" data-en="Full name" class="text-sm font-medium text-gray-300">Nombre
+                  completo</label><input id="contact-nombre" name="nombre" type="text" required autocomplete="name" placeholder="Ej. Jane Doe" class="w-full bg-dark-900 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all">
+              </div>
+              <div class="space-y-2"><label for="contact-email" data-es="Email corporativo" data-en="Corporate email" class="text-sm font-medium text-gray-300">Email
+                  corporativo</label><input id="contact-email" name="email" type="email" required autocomplete="email" inputmode="email" placeholder="jane@empresa.ai" class="w-full bg-dark-900 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all">
+              </div>
+            </div>
+            <div class="space-y-2"><label for="contact-empresa" data-es="Empresa / Organización" data-en="Company / Organization" class="text-sm font-medium text-gray-300">Empresa /
+                Organización</label><input id="contact-empresa" name="empresa" type="text" autocomplete="organization" placeholder="Nombre de tu laboratorio o startup" class="w-full bg-dark-900 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all">
+            </div>
+            <!-- honeypot anti-bot -->
+            <input name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+            <div class="space-y-2"><label for="contact-caso-uso" data-es="Caso de uso principal" data-en="Main use case" class="text-sm font-medium text-gray-300">Caso de uso
+                principal</label><select id="contact-caso-uso" name="caso_uso" class="w-full bg-dark-900 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all appearance-none">
+                <option value="" disabled="" selected="" data-es="Selecciona una opción" data-en="Select an option">
+                  Selecciona una opción</option>
+                <option value="world-models" data-es="Entrenamiento de World Models" data-en="World Models Training">Entrenamiento de World Models
+                </option>
+                <option value="behavior-cloning" data-es="Behavior Cloning / Agentes de IA" data-en="Behavior Cloning / AI Agents">Behavior Cloning /
+                  Agentes de IA</option>
+                <option value="rl">Reinforcement Learning</option>
+                <option value="analysis" data-es="Análisis de Gameplay / Visión Computacional" data-en="Gameplay Analysis / Computer Vision">Análisis de
+                  Gameplay / Visión Computacional</option>
+                <option value="other" data-es="Otro" data-en="Other">Otro
+                </option>
+              </select></div>
+            <div class="space-y-2"><label for="contact-mensaje" data-es="Mensaje adicional (Opcional)" data-en="Additional message (Optional)" class="text-sm font-medium text-gray-300">Mensaje adicional
+                (Opcional)</label><textarea id="contact-mensaje" name="mensaje" rows="4" placeholder="Cuéntanos más sobre el volumen de datos o juegos específicos que buscas..." class="w-full bg-dark-900 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all resize-none"></textarea>
+            </div><button type="submit" class="w-full py-4 btn-monou-primary rounded-xl glow-red transition-colors mt-4 flex items-center justify-center gap-2"><span data-es="Enviar Solicitud" data-en="Send Request">Enviar
+                Solicitud</span> <i class="fa-solid fa-paper-plane text-sm" aria-hidden="true"></i></button>
+            <p id="contacto-form-help" data-es="Tu solicitud llega directamente a nuestro equipo. Respondemos en menos de 24 horas." data-en="Your request goes directly to our team. We reply within 24 hours." class="text-xs text-center text-gray-500 mt-4">Tu solicitud llega directamente a nuestro equipo. Respondemos en menos de 24 horas.</p>
+          </form>
+        </div>
+      </section>
+    </main>
+    <footer id="footer" role="contentinfo" aria-label="Pie de página" class="w-full border-t border-white/5 bg-dark-900/50 backdrop-blur-lg relative z-10 py-12">
+      <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div class="flex items-center gap-2"><span class="font-bold text-lg tracking-tight"><span class="text-white">monoulabs</span><span class="text-gray-500">.ai</span></span></div>
+        <div class="flex items-center gap-6 text-sm text-gray-500"><a data-link-key="privacy_terms" href="#" data-es="Términos de Privacidad" data-en="Privacy Terms" class="hover:text-white transition-colors">Términos de
+            Privacidad</a><a data-link-key="data_licenses" href="#" data-es="Licencias de Datos" data-en="Data Licenses" class="hover:text-white transition-colors">Licencias de Datos</a></div>
+        <div class="text-xs text-gray-600">
+          © 2026 Monou Labs. AI Training Infrastructure.
+        </div>
+      </div>
+    </footer>
+    <script>
+      // Carousel functionality
+      let currentSlide = 0;
+      const totalSlides = 4;
+
+      function moveCarousel(direction)
+      {
+        currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+        updateCarousel();
+      }
+
+      function goToSlide(index)
+      {
+        currentSlide = index;
+        updateCarousel();
+      }
+
+      function updateCarousel()
+      {
+        const track = document.getElementById('carouselTrack');
+        track.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+        const indicators = document.querySelectorAll('.carousel-indicator');
+        indicators.forEach((indicator, index) =>
+        {
+          // v3.1.1 — sync aria-selected with active class para a11y
+          indicator.setAttribute('aria-selected', index === currentSlide ? 'true' : 'false');
+          if (index === currentSlide)
+          {
+            indicator.classList.add('active');
+          }
+          else
+          {
+            indicator.classList.remove('active');
+          }
+        });
+      }
+
+      // Language switcher functionality - DEFAULT TO SPANISH (matches <html lang="es">)
+      // ES is the canonical/indexable locale per Audit v3 Opcion B; EN is a UX toggle.
+      // Previously defaulted to 'en' which created a mismatch: crawlers indexed ES copy
+      // while real users saw EN copy. v3.1.1 fix.
+      let currentLang = 'es';
+      const translations = {
+        es:
+        {},
+        en:
+        {}
+      };
+
+      document.querySelectorAll('[data-es]').forEach(el =>
+      {
+        translations.es[el] = el.getAttribute('data-es');
+        translations.en[el] = el.getAttribute('data-en');
+      });
+
+      // Initialize page in English on load
+      window.addEventListener('DOMContentLoaded', function()
+      {
+        // Update active state
+        document.querySelectorAll('.lang-option').forEach(opt =>
+        {
+          if (opt.getAttribute('data-lang') === 'en')
+          {
+            opt.classList.remove('inactive');
+            opt.classList.add('active');
+          }
+          else
+          {
+            opt.classList.remove('active');
+            opt.classList.add('inactive');
+          }
+        });
+
+        // Update all translatable elements to English
+        document.querySelectorAll('[data-es]').forEach(el =>
+        {
+          const text = el.getAttribute('data-en');
+          if (text)
+          {
+            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')
+            {
+              el.placeholder = text;
+            }
+            else if (el.tagName === 'OPTION')
+            {
+              el.textContent = text;
+            }
+            else
+            {
+              el.textContent = text;
+            }
+          }
+        });
+      });
+
+      document.querySelectorAll('.lang-option').forEach(option =>
+      {
+        option.addEventListener('click', function()
+        {
+          const lang = this.getAttribute('data-lang');
+          if (lang !== currentLang)
+          {
+            currentLang = lang;
+
+            // Update active state
+            document.querySelectorAll('.lang-option').forEach(opt =>
+            {
+              if (opt.getAttribute('data-lang') === lang)
+              {
+                opt.classList.remove('inactive');
+                opt.classList.add('active');
+              }
+              else
+              {
+                opt.classList.remove('active');
+                opt.classList.add('inactive');
+              }
+            });
+
+            // Update all translatable elements
+            document.querySelectorAll('[data-es]').forEach(el =>
+            {
+              const text = el.getAttribute(`data-${lang}`);
+              if (text)
+              {
+                if (el.tagName === 'INPUT' || el.tagName ===
+                  'TEXTAREA')
+                {
+                  el.placeholder = text;
+                }
+                else if (el.tagName === 'OPTION')
+                {
+                  el.textContent = text;
+                }
+                else
+                {
+                  el.textContent = text;
+                }
+              }
+            });
+          }
+        });
+      });
+    </script>
+  
+
+<!-- Override opcional de la URL del backend (déjalo comentado en prod):
+         <meta name="api-base" content="https://otro-backend.com"> -->
+    <script src="assets/js/contact-form.js" defer></script>
+    <script src="assets/js/stats-loader.js" defer></script>
+    <script src="assets/js/games-loader.js?v=20260525b" defer></script>
+    <script src="assets/js/links-loader.js" defer></script>
+    <script src="assets/js/delivery-loader.js" defer></script>
+    <script src="assets/js/info-columns-loader.js" defer></script>
+    <!-- v2.2.0: analytics-loader inyecta GA4/GTM dinámicamente desde admin (assets/js/analytics-loader.js) -->
+    <script src="assets/js/analytics-loader.js" defer></script>
+  </body></html>
